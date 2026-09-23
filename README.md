@@ -117,7 +117,10 @@ npm run dev                        # add ?demo=1 to preview the UI with fixture 
 - **Cost:** a planning run is about 4–6 model calls, roughly $0.08–0.15 at Sonnet 5 prices (shown live in the trace). Rate limits (per user, per IP, global per day) protect the demo key.
 - **Mock data first.** The tool interfaces are shaped like real APIs, so real data is a per-tool swap: Open-Meteo for weather (free, no key), OSM Overpass / Foursquare for places, OSRM for travel times.
 
-## Deploying (prepared, not done yet)
+## Live deployment
 
-- **Backend on Railway:** root `backend/`, Dockerfile build, a volume at `/data`. Env: `OPENROUTER_API_KEY`, `ALLOWED_ORIGINS=<vercel url>`.
-- **Frontend on Vercel:** root `frontend/`, env `VITE_API_URL=<railway url>`.
+- **App (Vercel):** https://perfect-saturday-planner-five.vercel.app
+- **API (Railway):** https://backend-production-78e5.up.railway.app (`/health`)
+
+- **Backend on Railway:** the service is built from `backend/Dockerfile`, with root `/backend` and a volume at `/data` for the SQLite memory. It redeploys on pushes that touch `backend/`. Env: `OPENROUTER_API_KEY`, `MODEL`, `DB_PATH=/data/planner.db`, and `ALLOWED_ORIGINS` set to the Vercel URL.
+- **Frontend on Vercel:** the project is rooted at `frontend/`, with `VITE_API_URL` set to the Railway URL. It's deployed with `vercel deploy --prod` from `frontend/`.
