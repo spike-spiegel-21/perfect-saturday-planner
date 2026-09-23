@@ -128,3 +128,15 @@ async def test_live_sources_replace_mock_places(tmp_path, monkeypatch):
     city, report = await build_city("delhi", settings=settings, cache=Store(str(tmp_path / "c.db")), saturday=SATURDAY)
     assert report.events == "swiggy" and report.places == "google"
     assert {p.source for p in city.places} == {"swiggy", "google"}
+
+
+def test_scenes_classifier_prefers_the_event_name():
+    assert classify("Hip Hop Nights At KICO Bangalore", ["board-games", "culinary"]) == "music"
+    assert classify("Fun World Bangalore", ["activities", "experiences"]) == "gaming"
+    assert classify("Clay Trinket Tray Date - Bangalore", ["activity summer", "workshop 08"]) == "workshop"
+    assert classify("Monsoon at Yazu Bangalore", ["activities", "workshop_08", "culinary_07"]) == "food_walk"
+    tiers = _tiers([
+        {"name": "Children Pass (80 cm to 120 cm)", "price": {"price": {"units": "999"}}},
+        {"name": "Adult Pass (Above 120 cm)", "price": {"price": {"units": "1199"}}},
+    ])
+    assert [t.price for t in tiers] == [1199]

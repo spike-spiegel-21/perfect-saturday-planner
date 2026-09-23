@@ -7,6 +7,7 @@ simulated. Each source falls back to the mock data on its own if it's unconfigur
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from dataclasses import dataclass, field
 
@@ -34,31 +35,41 @@ async def build_city(key: str, *, settings, cache, saturday) -> tuple[CityData, 
     mock_events = [p for p in base.places if p.kind == "event"]
     mock_rest = [p for p in base.places if p.kind != "event"]
 
-    events: list[Place] = mock_events
-    if settings.swiggy_enabled:
-        try:
-            from app.sources.swiggy_scenes import fetch_events
+    async def live_events():
+        from app.sources.swiggy_scenes import fetch_events
 
-            live = await fetch_events(base, saturday, settings=settings, cache=cache)
-            if live:
-                events, report.events = live, "swiggy"
-            else:
-                report.notes.append("Swiggy Scenes had no Saturday events for this city; using sample events.")
-        except Exception as exc:  # any failure: keep the mock events, say so in the trace
-            log.warning("swiggy scenes unavailable: %s", exc)
-            report.notes.append(f"Swiggy Scenes unavailable ({exc.__class__.__name__}); using sample events.")
+        return await fetch_events(base, saturday, settings=settings, cache=cache)
+
+    async def live_places():
+        from app.sources.google_places import fetch_places
+
+        return await fetch_places(base, settings.google_maps_api_key, cache, settings.places_cache_hours * 3600)
+
+    async def nothing():
+        return None
+
+    # Both sources at once; each result (or failure) is handled on its own.
+    got_events, got_places = await asyncio.gather(
+        live_events() if settings.swiggy_enabled else nothing(),
+        live_places() if settings.google_maps_api_key else nothing(),
+        return_exceptions=True,
+    )
+
+    events: list[Place] = mock_events
+    if isinstance(got_events, BaseException):
+        log.warning("swiggy scenes unavailable: %s", got_events)
+        report.notes.append(f"Swiggy Scenes unavailable ({_short(got_events)}); using sample events.")
+    elif got_events:
+        events, report.events = got_events, "swiggy"
+    elif settings.swiggy_enabled:
+        report.notes.append("Swiggy Scenes had no Saturday events for this city; using sample events.")
 
     rest: list[Place] = mock_rest
-    if settings.google_maps_api_key:
-        try:
-            from app.sources.google_places import fetch_places
-
-            live = await fetch_places(base, settings.google_maps_api_key, cache, settings.places_cache_hours * 3600)
-            if live:
-                rest, report.places = live, "google"
-        except Exception as exc:
-            log.warning("google places unavailable: %s", exc)
-            report.notes.append(f"Google Places unavailable ({exc.__class__.__name__}); using sample places.")
+    if isinstance(got_places, BaseException):
+        log.warning("google places unavailable: %s", got_places)
+        report.notes.append(f"Google Places unavailable ({_short(got_places)}); using sample places.")
+    elif got_places:
+        rest, report.places = got_places, "google"
 
     places = [p.model_copy(deep=True) for p in events + rest]
     if report.events != "mock" or report.places != "mock":
@@ -69,3 +80,8 @@ async def build_city(key: str, *, settings, cache, saturday) -> tuple[CityData, 
         "restaurants": sum(p.kind == "restaurant" for p in places),
     }
     return base.model_copy(update={"places": places}), report
+
+
+def _short(exc: BaseException) -> str:
+    text = str(exc) or exc.__class__.__name__
+    return text if len(text) <= 90 else text[:89] + "…"

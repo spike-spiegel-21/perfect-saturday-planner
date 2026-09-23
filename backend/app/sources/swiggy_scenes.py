@@ -30,20 +30,37 @@ CITY_QUERIES = {
     "delhi": ("Delhi",),
     "mumbai": ("Mumbai",),
 }
-CATEGORY_WORDS: tuple[tuple[str, tuple[str, ...]], ...] = (
+# The event name is the strong signal; Scenes tags are mostly internal campaign labels ("crazy 26mar").
+NAME_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("comedy", ("comedy", "stand up", "standup", "stand-up", "open mic")),
-    ("theatre", ("theatre", "theater", "play", "drama", "improv")),
-    ("workshop", ("workshop", "class", "pottery", "painting", "masterclass", "paint")),
-    ("food_walk", ("food", "tasting", "brunch", "culinary", "chef")),
-    ("gaming", ("game night", "gaming", "quiz", "trivia", "board game")),
-    ("sports", ("sports", "cricket", "football", "marathon", "yoga", "run ")),
+    ("theatre", ("theatre", "theater", "play ", "drama", "improv")),
+    ("museum", ("museum", "illusion")),
+    ("workshop", ("workshop", "painting", "candle", "clay", "resin", "pottery", "craft", "masterclass", "making", "class")),
+    ("food_walk", ("brunch", "menu", "kitchen", "dinner", "lunch", "happy hour", "tasting", "food", "feast", "buffet",
+                   "pop-up", "popup", "chef")),
+    ("music", ("hip hop", "dj", "gig", "concert", "live music", "jazz", "karaoke", "garba", "dandiya", "bollywood",
+               "techno", "edm", "band", "night", "party")),
+    ("gaming", ("fun world", "amusement", "arcade", "game", "trampoline", "bowling", "escape room", "vr ", "snow")),
+    ("sports", ("marathon", "cricket", "football", "yoga", " run")),
     ("movie", ("screening", "film", "movie", "cinema")),
-    ("art", ("exhibition", "gallery", "art ")),
-    ("nature", ("trek", "hike", "birding", "nature")),
+    ("art", ("exhibition", "gallery", "art show")),
+    ("nature", ("trek", "hike", "birding")),
     ("walk", ("walk", "trail")),
-    ("music", ("music", "concert", "gig", "band", "dj", "jazz", "acoustic", "karaoke", "garba", "dandiya",
-               "bollywood", "sufi", "live", "party", "night")),
 )
+TAG_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("comedy", ("comedy",)),
+    ("theatre", ("theatre", "theater")),
+    ("food_walk", ("culinary", "brunch", "food tasting", "dining")),
+    ("music", ("music", "nightlife", "party")),
+    ("workshop", ("workshop", "art & creativity", "craft")),
+    ("gaming", ("activities", "experiences")),
+)
+BAR_WORDS = ("happy hour", "cocktail", " bar", "pub", "brewery", "drinks", "beer", "oktoberfest")
+CHILD_PASS = re.compile(r"child|kid|infant|junior", re.I)
+GENDERED_PASS = re.compile(r"\b(female|women|woman|ladies|girls?)\b", re.I)  # discounted passes not everyone can buy
+FETCH_TIMEOUT_S = 30
+WINDOW_EVENT_MIN = 240   # events listed as longer than this are open windows (happy hours, parks): plan a typical visit
+TYPICAL_VISIT_MIN = 150
 GROUP_PASS = re.compile(r"\bfor\s*([2-9]|\d{2})\b|couple|group|table", re.I)
 
 
@@ -61,7 +78,15 @@ async def fetch_events(city: CityData, saturday: date, *, settings, cache) -> li
 
 
 async def collect(city: CityData, settings) -> dict:
-    """Raw Scenes data for a city: search suggestions plus the show listing of each event."""
+    """Raw Scenes data for a city, capped at FETCH_TIMEOUT_S so a slow connection can't stall a plan."""
+    try:
+        return await asyncio.wait_for(_collect(city, settings), timeout=FETCH_TIMEOUT_S)
+    except asyncio.TimeoutError:
+        raise ScenesError(f"Scenes took longer than {FETCH_TIMEOUT_S}s") from None
+
+
+async def _collect(city: CityData, settings) -> dict:
+    """Search suggestions plus the show listing of each event."""
     if not settings.swiggy_scenes_token:
         raise ScenesError("no SWIGGY_SCENES_TOKEN; run `uv run python -m app.sources.swiggy_login`")
     where = {"latitude": city.center.lat, "longitude": city.center.lng}
@@ -171,7 +196,7 @@ def to_event(suggestion: dict, listing: dict, city: CityData, saturday: date) ->
         tags.append("late_night")
     if any("kid" in t or "family" in t for t in tags_raw):
         tags.append("family")
-    if any(w in " ".join(tags_raw) for w in ("bar", "pub", "brewery", "drinks")):
+    if any(w in f" {name.lower()} {' '.join(tags_raw)}" for w in BAR_WORDS):
         tags.append("bar")
     if min(t.price for t in tiers) == 0:
         tags.append("free")
@@ -195,9 +220,13 @@ def to_event(suggestion: dict, listing: dict, city: CityData, saturday: date) ->
 
 
 def classify(name: str, tags: list[str]) -> str:
-    text = f" {name.lower()} {' '.join(tags)} "
-    for category, words in CATEGORY_WORDS:
-        if any(w in text for w in words):
+    title = f" {name.lower()} "
+    for category, words in NAME_RULES:
+        if any(w in title for w in words):
+            return category
+    tag_text = " ".join(tags)
+    for category, words in TAG_RULES:
+        if any(w in tag_text for w in words):
             return category
     return "music"
 
@@ -226,7 +255,9 @@ def _duration(info: dict, span: int | None) -> int:
     if value:
         minutes = int(float(value) * 60) if "HOUR" in (d.get("type") or "") else int(float(value))
     minutes = minutes or span or 120
-    return max(30, min(300, minutes))
+    if minutes > WINDOW_EVENT_MIN:
+        minutes = TYPICAL_VISIT_MIN
+    return max(30, minutes)
 
 
 def _tiers(tickets: list[dict]) -> list[PriceTier]:
@@ -236,7 +267,9 @@ def _tiers(tickets: list[dict]) -> list[PriceTier]:
         price = t.get("price") or {}
         units = (price.get("discountedPrice") or {}).get("units") or (price.get("price") or {}).get("units") or "0"
         parsed.append((t.get("name") or "Ticket", int(float(units)), bool(GROUP_PASS.search(t.get("name") or ""))))
-    singles = [(n, p) for n, p, group in parsed if not group] or [(n, p) for n, p, _ in parsed]
+    adults = [x for x in parsed if not CHILD_PASS.search(x[0])] or parsed
+    adults = [x for x in adults if not GENDERED_PASS.search(x[0])] or adults
+    singles = [(n, p) for n, p, group in adults if not group] or [(n, p) for n, p, _ in adults]
     seen, tiers = set(), []
     for n, p in sorted(singles, key=lambda x: x[1]):
         if n.lower() not in seen:
