@@ -28,19 +28,21 @@ interface Props {
   onChoose: (kind: OptionKind) => void;
   canSimulate: boolean;
   onSimulate: (sim: Simulate) => void;
+  /** Waiting for the reply to an answer: show a quiet typing indicator. */
+  typing: boolean;
   /** Room to leave under the last message for the floating composer. */
   bottomSpace: number;
 }
 
 function Avatar() {
   return (
-    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand text-white shadow-card" aria-hidden>
+    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand text-accent-ink shadow-card" aria-hidden>
       <Sun size={16} strokeWidth={2.4} />
     </span>
   );
 }
 
-export function Chat({ messages, run, trace, planning, elapsed, choosing, onChoose, canSimulate, onSimulate, bottomSpace }: Props) {
+export function Chat({ messages, run, trace, planning, elapsed, choosing, onChoose, canSimulate, onSimulate, typing, bottomSpace }: Props) {
   const endRef = useRef<HTMLDivElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const shownRun = useRef<string | null>(null);
@@ -54,8 +56,8 @@ export function Chat({ messages, run, trace, planning, elapsed, choosing, onChoo
   }, [messages.length]);
 
   useEffect(() => {
-    if (planningOn) endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [planningOn]);
+    if (planningOn || typing) endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [planningOn, typing]);
 
   // Plans that arrive live (not on reload) -> bring the cards into view.
   useEffect(() => {
@@ -103,7 +105,7 @@ export function Chat({ messages, run, trace, planning, elapsed, choosing, onChoo
         <div key={m.id} className="animate-fade-up space-y-3">
           {m.role === "user" ? (
             <div className="flex justify-end">
-              <p className="max-w-[85%] whitespace-pre-line break-words rounded-3xl rounded-tr-lg bg-brand-deep px-4 py-2.5 text-[15px] leading-relaxed text-white shadow-card sm:max-w-[70%]">
+              <p className="max-w-[85%] whitespace-pre-line break-words rounded-3xl rounded-tr-lg bg-cool px-4 py-2.5 text-[15px] leading-relaxed text-white shadow-card sm:max-w-[70%]">
                 {m.content}
               </p>
             </div>
@@ -113,7 +115,7 @@ export function Chat({ messages, run, trace, planning, elapsed, choosing, onChoo
               <div
                 className={[
                   "max-w-[85%] rounded-3xl rounded-tl-lg border px-4 py-2.5 text-[15px] leading-relaxed shadow-card backdrop-blur sm:max-w-[42rem]",
-                  m.tone === "error" ? "border-pink/40 bg-pink-soft text-ink" : "border-line bg-white/85 text-ink",
+                  m.tone === "error" ? "border-rose/40 bg-rose-soft text-ink" : "border-line bg-surface/85 text-ink",
                 ].join(" ")}
               >
                 <p className="flex items-start gap-2 whitespace-pre-line break-words">
@@ -124,7 +126,7 @@ export function Chat({ messages, run, trace, planning, elapsed, choosing, onChoo
                   <button
                     type="button"
                     onClick={m.retry}
-                    className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-white px-3 py-1 text-sm font-medium text-ink hover:border-violet hover:text-violet-ink"
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-surface px-3 py-1 text-sm font-medium text-ink hover:border-accent hover:text-accent"
                   >
                     <RefreshCw size={14} aria-hidden /> Try again
                   </button>
@@ -144,6 +146,19 @@ export function Chat({ messages, run, trace, planning, elapsed, choosing, onChoo
 
       {!anchorId && runIdx < 0 && traceBlock}
       {run && runIdx < 0 && results}
+
+      {typing && (
+        <div className="flex items-start gap-3 animate-fade-up" role="status" aria-label="Reading your answer">
+          <Avatar />
+          <div className="rounded-3xl rounded-tl-lg border border-line bg-surface/80 px-4 py-3.5 shadow-card backdrop-blur">
+            <span className="typing-dots" aria-hidden>
+              <span />
+              <span />
+              <span />
+            </span>
+          </div>
+        </div>
+      )}
 
       <div style={{ height: bottomSpace }} aria-hidden />
       <div ref={endRef} />

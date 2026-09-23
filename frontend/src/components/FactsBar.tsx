@@ -56,13 +56,13 @@ export function FactsBar({ slots, asking }: { slots: Slots; asking: string | nul
               className={[
                 "inline-flex max-w-[16rem] shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs backdrop-blur",
                 value
-                  ? "border-line bg-white/80 text-ink shadow-card"
+                  ? "border-line bg-surface/80 text-ink shadow-card"
                   : active
-                    ? "border-dashed border-violet bg-white/60 text-violet-ink"
-                    : "border-dashed border-line-strong bg-white/40 text-faint",
+                    ? "border-dashed border-accent bg-surface/60 text-accent"
+                    : "border-dashed border-line-strong bg-surface/40 text-faint",
               ].join(" ")}
             >
-              <Icon size={13} className={value ? "shrink-0 text-violet" : "shrink-0"} aria-hidden />
+              <Icon size={13} className={value ? "shrink-0 text-accent" : "shrink-0"} aria-hidden />
               <span className="truncate">{value ?? FIELD_LABEL[field]}</span>
             </li>
           );

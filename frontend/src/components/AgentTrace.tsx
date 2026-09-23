@@ -122,22 +122,22 @@ export function AgentTrace({ entries, running, elapsed, note, canSimulate, onSim
   const Icon = running ? null : s.fallback ? TriangleAlert : CircleCheck;
 
   return (
-    <div className="animate-fade-up overflow-hidden rounded-2xl border border-line bg-white/70 shadow-card backdrop-blur">
+    <div className="animate-fade-up overflow-hidden rounded-2xl border border-line bg-surface/70 shadow-card backdrop-blur">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex w-full items-center gap-3 px-3.5 py-2.5 text-left transition-colors hover:bg-white/60"
+        className="flex w-full items-center gap-3 px-3.5 py-2.5 text-left transition-colors hover:bg-surface/60"
       >
         {running ? (
           <span className="relative flex h-6 w-6 shrink-0 items-center justify-center" aria-hidden>
             <span className="animate-orb absolute inset-0 rounded-full bg-brand opacity-80 blur-[3px]" />
-            <Sparkles size={13} className="relative text-white" />
+            <Sparkles size={13} className="relative text-accent-ink" />
           </span>
         ) : (
           Icon && (
             <span
-              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${s.fallback ? "bg-butter text-warn" : "bg-good-soft text-good"}`}
+              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${s.fallback ? "bg-warn-soft text-warn" : "bg-good-soft text-good"}`}
               aria-hidden
             >
               <Icon size={14} />
@@ -161,7 +161,7 @@ export function AgentTrace({ entries, running, elapsed, note, canSimulate, onSim
       </button>
 
       {open && (
-        <div className="border-t border-line bg-white/50 px-3 pb-3 pt-2">
+        <div className="border-t border-line bg-surface/50 px-3 pb-3 pt-2">
           <p className="px-1 pb-1.5 text-xs tabular-nums text-muted sm:hidden">{meta}</p>
           <TraceList entries={entries} running={running} />
           {!running && canSimulate && (
@@ -174,7 +174,7 @@ export function AgentTrace({ entries, running, elapsed, note, canSimulate, onSim
                   key={id}
                   type="button"
                   onClick={() => onSimulate(id)}
-                  className="inline-flex items-center gap-1 rounded-full border border-line-strong bg-white/80 px-2.5 py-1 text-xs font-medium text-ink transition-colors hover:border-violet hover:text-violet-ink"
+                  className="inline-flex items-center gap-1 rounded-full border border-line-strong bg-surface/80 px-2.5 py-1 text-xs font-medium text-ink transition-colors hover:border-accent hover:text-accent"
                 >
                   <SimIcon size={12} aria-hidden /> {label}
                 </button>
@@ -239,10 +239,10 @@ function Row({
 }) {
   const [open, setOpen] = useState(false);
   const toneCls = {
-    plain: "bg-white/80",
-    good: "bg-good-soft/70",
-    warn: "bg-butter/70",
-    bad: "bg-pink-soft/80",
+    plain: "bg-surface/80",
+    good: "bg-good-soft",
+    warn: "bg-warn-soft",
+    bad: "bg-rose-soft",
     quiet: "",
   }[tone];
   const expandable = raw !== undefined;
@@ -298,7 +298,7 @@ function Entry({ ev, result, running }: { ev: TraceEvent; result?: ToolResult; r
       return <li className="px-1 pt-1.5 text-[11px] font-semibold uppercase tracking-wider text-faint">Step {ev.n}</li>;
     case "narration":
       return (
-        <Row icon={MessageSquareText} iconClass="text-violet" tone="quiet">
+        <Row icon={MessageSquareText} iconClass="text-accent" tone="quiet">
           {ev.text}
         </Row>
       );
@@ -309,15 +309,15 @@ function Entry({ ev, result, running }: { ev: TraceEvent; result?: ToolResult; r
       return (
         <Row
           icon={!result ? Sparkles : failed ? CircleX : Wrench}
-          iconClass={!result ? "text-orchid" : failed ? "text-bad" : "text-violet-ink"}
+          iconClass={!result ? "text-accent" : failed ? "text-bad" : "text-teal-ink"}
           spin={!result && running}
           raw={result ? { call: ev, result } : ev}
           tone={failed ? "bad" : "plain"}
         >
           <div className="flex flex-wrap items-center gap-x-2">
-            <span className="font-mono text-[12px] font-semibold text-violet-ink">{ev.name}</span>
+            <span className="font-mono text-[12px] font-semibold text-teal-ink">{ev.name}</span>
             {result && <span className="text-[11px] tabular-nums text-faint">{result.ms} ms</span>}
-            {result?.cached && <span className="rounded bg-violet-soft px-1 text-[10px] font-semibold uppercase text-violet-ink">cached</span>}
+            {result?.cached && <span className="rounded bg-teal-soft px-1 text-[10px] font-semibold uppercase text-teal-ink">cached</span>}
           </div>
           {Object.keys(ev.args ?? {}).length > 0 && (
             <p className="mt-0.5 break-words font-mono text-[11px] text-faint">{compactArgs(ev.args)}</p>
@@ -412,9 +412,9 @@ function Thinking({ text }: { text: string }) {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex w-full items-start gap-2 rounded-xl px-2.5 py-1.5 text-left hover:bg-white/60"
+        className="flex w-full items-start gap-2 rounded-xl px-2.5 py-1.5 text-left hover:bg-surface/60"
       >
-        <Brain size={14} className="mt-0.5 shrink-0 text-orchid" aria-hidden />
+        <Brain size={14} className="mt-0.5 shrink-0 text-teal-ink" aria-hidden />
         <span className="min-w-0 flex-1 text-xs italic leading-snug text-muted">{open ? text : short}</span>
       </button>
     </li>

@@ -390,7 +390,7 @@ export default function App() {
             <div className="flex flex-col items-center gap-4 text-sm text-muted">
               <Logo size={48} />
               <span className="inline-flex items-center gap-2">
-                <LoaderCircle size={16} className="animate-spin text-violet" aria-hidden /> Getting things ready…
+                <LoaderCircle size={16} className="animate-spin text-accent" aria-hidden /> Getting things ready…
               </span>
             </div>
           )}
@@ -401,7 +401,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => void bootSession()}
-                className="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-white px-3.5 py-1.5 text-sm font-medium hover:border-violet hover:text-violet-ink"
+                className="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 py-1.5 text-sm font-medium hover:border-accent hover:text-accent"
               >
                 <RefreshCw size={14} aria-hidden /> Try again
               </button>
@@ -439,6 +439,7 @@ export default function App() {
               onChoose={(k) => void choose(k)}
               canSimulate={canSimulate}
               onSimulate={(sim) => void startPlan(sim)}
+              typing={sending && !planning}
               bottomSpace={dockHeight + 28}
             />
           </div>

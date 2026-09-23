@@ -83,7 +83,8 @@ export function Composer({ variant, pills, multi, placeholder, disabled, busy, o
     }
   };
 
-  const showPills = pills.length > 0 && !disabled;
+  // While the next question is on its way, the old suggestions would only be noise.
+  const showPills = pills.length > 0 && !disabled && !busy;
 
   return (
     <div>
@@ -109,16 +110,16 @@ export function Composer({ variant, pills, multi, placeholder, disabled, busy, o
                   onClick={() => toggle(pill)}
                   className={[
                     "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1 text-[13px] font-medium transition-all sm:py-1.5 sm:text-sm",
-                    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet",
+                    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
                     on
-                      ? "border-transparent bg-brand-deep text-white shadow-card"
-                      : "border-line-strong bg-white/80 text-ink hover:-translate-y-px hover:border-violet hover:text-violet-ink",
+                      ? "border-transparent bg-accent text-accent-ink shadow-card"
+                      : "border-line-strong bg-surface/80 text-ink hover:-translate-y-px hover:border-accent hover:text-accent",
                   ].join(" ")}
                 >
                   {on ? (
                     <Check size={14} aria-hidden />
                   ) : pill.remembered ? (
-                    <Brain size={14} className="text-orchid-ink" aria-label="remembered from last time" />
+                    <Brain size={14} className="text-teal-ink" aria-label="remembered from last time" />
                   ) : null}
                   {pill.label}
                 </button>
@@ -149,8 +150,8 @@ export function Composer({ variant, pills, multi, placeholder, disabled, busy, o
             disabled={disabled || busy || !text.trim()}
             aria-label="Send"
             className={[
-              "inline-flex shrink-0 items-center justify-center rounded-full bg-brand text-white shadow-card transition-[opacity,transform] hover:scale-105 disabled:scale-100 disabled:opacity-35",
-              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet",
+              "inline-flex shrink-0 items-center justify-center rounded-full bg-brand text-accent-ink shadow-card transition-[opacity,transform] hover:scale-105 disabled:scale-100 disabled:opacity-35",
+              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
               hero ? "mb-1 h-11 w-11" : "mb-0.5 h-10 w-10",
             ].join(" ")}
           >

@@ -9,7 +9,7 @@ interface Props {
 export function Logo({ size = 32 }: { size?: number }) {
   return (
     <span
-      className="flex shrink-0 items-center justify-center rounded-xl bg-brand text-white shadow-card"
+      className="flex shrink-0 items-center justify-center rounded-xl bg-brand text-accent-ink shadow-card"
       style={{ width: size, height: size }}
       aria-hidden
     >
@@ -26,7 +26,7 @@ export function Header({ landing, offline, onNewPlan }: Props) {
         <p className="truncate text-[15px] font-semibold tracking-tight text-ink">Perfect Saturday</p>
         {offline && (
           <span
-            className="rounded-full bg-butter px-2 py-0.5 text-[11px] font-medium text-warn"
+            className="rounded-full bg-warn-soft px-2 py-0.5 text-[11px] font-medium text-warn"
             title="No AI key is configured on the server, so plans come from the rule-based planner."
           >
             Offline mode
@@ -37,7 +37,7 @@ export function Header({ landing, offline, onNewPlan }: Props) {
         <button
           type="button"
           onClick={onNewPlan}
-          className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white/60 px-3 py-1.5 text-sm font-medium text-ink backdrop-blur transition-colors hover:border-violet hover:text-violet-ink"
+          className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface/60 px-3 py-1.5 text-sm font-medium text-ink backdrop-blur transition-colors hover:border-accent hover:text-accent"
         >
           <Plus size={16} aria-hidden />
           New plan

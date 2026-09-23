@@ -9,8 +9,8 @@ export function Hero({ memoryHint }: { memoryHint: string | null }) {
         <Logo size={56} />
       </div>
       {memoryHint && (
-        <p className="mx-auto mb-4 inline-flex max-w-full items-center gap-1.5 rounded-full border border-line bg-white/70 px-3 py-1 text-xs text-muted backdrop-blur">
-          <Brain size={13} className="shrink-0 text-orchid-ink" aria-hidden />
+        <p className="mx-auto mb-4 inline-flex max-w-full items-center gap-1.5 rounded-full border border-line bg-surface/70 px-3 py-1 text-xs text-muted backdrop-blur">
+          <Brain size={13} className="shrink-0 text-teal-ink" aria-hidden />
           <span className="truncate">Welcome back · {memoryHint}</span>
         </p>
       )}

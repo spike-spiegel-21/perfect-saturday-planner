@@ -28,9 +28,9 @@ import { clock, clockRange, CROWD_LABEL, fallbackReason, minutes, MODE_LABEL, ru
 import { KIND_LABELS, KIND_ORDER, type Leg, type OptionKind, type PlanItemOut, type PlanOptionOut, type RunOut } from "../types";
 
 const KIND_STYLE: Record<OptionKind, { icon: LucideIcon; text: string; soft: string; dot: string }> = {
-  time_saver: { icon: Zap, text: "text-violet-ink", soft: "bg-violet-soft", dot: "bg-violet" },
-  recommended: { icon: Sparkles, text: "text-orchid-ink", soft: "bg-orchid-soft", dot: "bg-orchid" },
-  value_for_money: { icon: PiggyBank, text: "text-pink-ink", soft: "bg-pink-soft", dot: "bg-pink" },
+  time_saver: { icon: Zap, text: "text-teal-ink", soft: "bg-teal-soft", dot: "bg-teal" },
+  recommended: { icon: Sparkles, text: "text-accent", soft: "bg-accent-soft", dot: "bg-accent" },
+  value_for_money: { icon: PiggyBank, text: "text-rose-ink", soft: "bg-rose-soft", dot: "bg-rose" },
 };
 
 const MODE_ICON: Record<Leg["mode"], LucideIcon> = {
@@ -53,7 +53,7 @@ export function PlanResults({ run, onChoose, choosing }: Props) {
   return (
     <section className="animate-fade-up space-y-3" aria-label="Your Saturday options">
       {run.fallback && (
-        <p className="flex items-start gap-2 rounded-xl bg-butter/80 px-3.5 py-2 text-sm text-ink">
+        <p className="flex items-start gap-2 rounded-xl bg-warn-soft px-3.5 py-2 text-sm text-ink">
           <TriangleAlert size={16} className="mt-0.5 shrink-0 text-warn" aria-hidden />
           <span>
             <span className="font-medium">Rule-based plan</span>
@@ -93,17 +93,17 @@ function Notes({ run }: { run: RunOut }) {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white/70 px-3 py-1 text-xs font-medium text-muted backdrop-blur transition-colors hover:border-violet hover:text-violet-ink"
+        className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface/70 px-3 py-1 text-xs font-medium text-muted backdrop-blur transition-colors hover:border-accent hover:text-accent"
       >
-        <CloudSun size={14} className="text-orchid-ink" aria-hidden />
+        <CloudSun size={14} className="text-teal-ink" aria-hidden />
         Weather and assumptions ({count})
         <ChevronDown size={13} className={`transition-transform ${open ? "rotate-180" : ""}`} aria-hidden />
       </button>
       {open && (
-        <ul className="animate-fade-up mt-2 space-y-1.5 rounded-2xl border border-line bg-white/70 p-3 text-sm text-muted backdrop-blur">
+        <ul className="animate-fade-up mt-2 space-y-1.5 rounded-2xl border border-line bg-surface/70 p-3 text-sm text-muted backdrop-blur">
           {run.weather_note && (
             <li className="flex items-start gap-2">
-              <CloudSun size={15} className="mt-0.5 shrink-0 text-orchid-ink" aria-hidden />
+              <CloudSun size={15} className="mt-0.5 shrink-0 text-teal-ink" aria-hidden />
               <span>{run.weather_note}</span>
             </li>
           )}
@@ -129,12 +129,12 @@ function StatusIcon({ option }: { option: PlanOptionOut }) {
     );
   if (status === "warn")
     return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-butter px-2 py-0.5 text-[11px] font-medium text-warn" title="Fits, with a note to read">
+      <span className="inline-flex items-center gap-1 rounded-full bg-warn-soft px-2 py-0.5 text-[11px] font-medium text-warn" title="Fits, with a note to read">
         <TriangleAlert size={12} aria-hidden /> Fits*
       </span>
     );
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-pink-soft px-2 py-0.5 text-[11px] font-medium text-bad" title="Doesn't fully fit">
+    <span className="inline-flex items-center gap-1 rounded-full bg-rose-soft px-2 py-0.5 text-[11px] font-medium text-bad" title="Doesn't fully fit">
       <CircleX size={12} aria-hidden /> Partial
     </span>
   );
@@ -162,7 +162,7 @@ function PlanCard({
   return (
     <article
       className={[
-        "relative flex flex-col gap-3.5 rounded-3xl bg-white/85 p-4 backdrop-blur transition-all sm:p-5",
+        "relative flex flex-col gap-3.5 rounded-3xl bg-surface/85 p-4 backdrop-blur transition-all sm:p-5",
         featured
           ? "ring-brand order-first shadow-lift [--ring-width:2px] @3xl:order-none @3xl:-translate-y-3"
           : "border border-line shadow-card",
@@ -172,7 +172,7 @@ function PlanCard({
       aria-label={`${KIND_LABELS[option.kind]}: ${option.title}`}
     >
       {featured && (
-        <span className="absolute -top-3 left-5 rounded-full bg-brand px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-white shadow-card">
+        <span className="absolute -top-3 left-5 rounded-full bg-brand px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-accent-ink shadow-card">
           Best fit
         </span>
       )}
@@ -201,7 +201,7 @@ function PlanCard({
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
-          className="inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 text-sm font-medium text-muted transition-colors hover:bg-violet-soft hover:text-violet-ink"
+          className="inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 text-sm font-medium text-muted transition-colors hover:bg-hover hover:text-accent"
         >
           {open ? "Less" : "Details"}
           <ChevronDown size={15} className={`transition-transform ${open ? "rotate-180" : ""}`} aria-hidden />
@@ -212,12 +212,12 @@ function PlanCard({
           disabled={chosen || choosing}
           className={[
             "ml-auto inline-flex items-center justify-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold transition-all",
-            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet",
+            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
             chosen
               ? "bg-good-soft text-good"
               : featured
-                ? "bg-brand-deep text-white shadow-card hover:shadow-lift"
-                : "border border-line-strong bg-white text-ink hover:border-violet hover:text-violet-ink",
+                ? "bg-accent text-accent-ink shadow-card hover:shadow-lift"
+                : "border border-line-strong bg-surface text-ink hover:border-accent hover:text-accent",
           ].join(" ")}
         >
           {choosing ? <LoaderCircle size={15} className="animate-spin" aria-hidden /> : chosen ? <Check size={15} aria-hidden /> : null}
@@ -271,7 +271,7 @@ function Details({ option }: { option: PlanOptionOut }) {
       </ol>
 
       {option.tradeoffs.length > 0 && (
-        <div className="rounded-2xl bg-butter/80 px-3 py-2.5">
+        <div className="rounded-2xl bg-warn-soft px-3 py-2.5">
           <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-ink">
             <Scale size={13} className="text-warn" aria-hidden /> Trade-offs
           </p>
@@ -305,7 +305,7 @@ function Details({ option }: { option: PlanOptionOut }) {
 
 function Meter({ label, value, limit, detail }: { label: string; value: number; limit: number; detail: string }) {
   const pct = limit > 0 ? (value / limit) * 100 : 0;
-  const fill = pct <= 100 ? "bg-brand" : pct <= 110 ? "bg-pink" : "bg-pink-ink";
+  const fill = pct <= 100 ? "bg-brand" : pct <= 110 ? "bg-rose" : "bg-rose-ink";
   return (
     <div>
       <div className="flex items-baseline justify-between gap-2 text-xs">
@@ -313,7 +313,7 @@ function Meter({ label, value, limit, detail }: { label: string; value: number; 
         <span className="font-medium tabular-nums text-ink">{detail}</span>
       </div>
       <div
-        className="mt-1 h-1.5 overflow-hidden rounded-full bg-violet-soft"
+        className="mt-1 h-1.5 overflow-hidden rounded-full bg-track"
         role="meter"
         aria-label={label}
         aria-valuemin={0}
@@ -330,7 +330,7 @@ function LegRow({ leg, home = false, end }: { leg: Leg; home?: boolean; end?: st
   const Icon = MODE_ICON[leg.mode] ?? Car;
   return (
     <li className="relative flex items-center gap-1.5 text-xs text-muted">
-      <span className="absolute -left-[21px] h-2.5 w-2.5 rounded-full border border-line-strong bg-white" />
+      <span className="absolute -left-[21px] h-2.5 w-2.5 rounded-full border border-line-strong bg-surface" />
       {home ? <House size={13} className="shrink-0" aria-hidden /> : <Icon size={13} className="shrink-0" aria-hidden />}
       <span className="min-w-0">
         {home ? (
@@ -349,7 +349,7 @@ function LegRow({ leg, home = false, end }: { leg: Leg; home?: boolean; end?: st
 }
 
 function Chip({ icon: Icon, children, tone = "plain" }: { icon: LucideIcon; children: string; tone?: "plain" | "good" | "warn" }) {
-  const cls = tone === "good" ? "bg-good-soft text-good" : tone === "warn" ? "bg-butter text-warn" : "bg-violet-soft/70 text-muted";
+  const cls = tone === "good" ? "bg-good-soft text-good" : tone === "warn" ? "bg-warn-soft text-warn" : "bg-hover text-muted";
   return (
     <span className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] ${cls}`}>
       <Icon size={11} aria-hidden />
@@ -367,9 +367,9 @@ function ItemRow({ item }: { item: PlanItemOut }) {
         : `${rupees(item.cost_inr)}${item.tier ? ` · ${item.tier}` : ""}`;
   return (
     <li className="relative">
-      <span className="absolute -left-[22.5px] top-1 h-3.5 w-3.5 rounded-full border-2 border-white bg-brand shadow-card" />
+      <span className="absolute -left-[22.5px] top-1 h-3.5 w-3.5 rounded-full border-2 border-surface bg-brand shadow-card" />
       <div className="flex items-baseline justify-between gap-2">
-        <span className="text-xs font-semibold tabular-nums text-violet-ink">{clockRange(item.start, item.end)}</span>
+        <span className="text-xs font-semibold tabular-nums text-accent">{clockRange(item.start, item.end)}</span>
         <span className="shrink-0 text-xs tabular-nums text-muted">{cost}</span>
       </div>
       <p className="mt-0.5 font-medium leading-snug text-ink">{item.name}</p>
@@ -388,7 +388,7 @@ function ItemRow({ item }: { item: PlanItemOut }) {
         )}
       </div>
       <p className="mt-1.5 text-sm leading-snug text-ink">
-        <span className="font-semibold text-orchid-ink">Why: </span>
+        <span className="font-semibold text-accent">Why: </span>
         {item.why_it_fits}
       </p>
       {item.blurb && <p className="mt-1 line-clamp-2 text-xs text-muted">{item.blurb}</p>}

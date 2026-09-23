@@ -1,66 +1,76 @@
 @import "tailwindcss";
 
-/* Brand palette: violet #5e2bff, orchid #c04cfd, pink #fc6dab on butter #f7f6c5 and mint #f3fae1.
-   Components use the utilities generated from @theme below (bg-canvas, text-ink, text-violet, ...). */
+/* Dark theme on the palette: saffron #edae49, raspberry #d1495b, teal #00798c, steel #30638e, navy #003d5b.
+   Components use the semantic utilities generated from @theme below (bg-canvas, text-ink, text-accent, ...). */
 :root {
-  color-scheme: light;
-  --violet: #5e2bff;
-  --orchid: #c04cfd;
-  --pink: #fc6dab;
-  --butter: #f7f6c5;
-  --mint: #f3fae1;
+  color-scheme: dark;
+  --saffron: #edae49;
+  --raspberry: #d1495b;
+  --teal: #00798c;
+  --steel: #30638e;
+  --navy: #003d5b;
 
-  --canvas: var(--mint);
-  --surface: #ffffff;
-  --surface-2: #f6f3ff;
-  --ink: #1c1537;
-  --muted: #5d587a;
-  --faint: #8f8aa8;
-  --line: rgb(94 43 255 / 0.12);
-  --line-strong: rgb(94 43 255 / 0.24);
+  --canvas: #021824;
+  --surface: #07293b;
+  --surface-2: #0b3449;
+  --hover: rgb(255 255 255 / 0.06);
+  --track: rgb(255 255 255 / 0.1);
+  --ink: #f4efe6;
+  --muted: #a7b8c6;
+  --faint: #7890a3;
+  --line: rgb(167 201 222 / 0.14);
+  --line-strong: rgb(167 201 222 / 0.28);
 
-  /* text-safe tones of the brand colours (>= 4.5:1 on white) */
-  --violet-ink: #4b1fe0;
-  --orchid-ink: #9b2fd6;
-  --pink-ink: #c8246f;
-  --violet-soft: #efeaff;
-  --orchid-soft: #f7e9ff;
-  --pink-soft: #ffe8f2;
+  --accent: var(--saffron);
+  --accent-ink: #0b1d29; /* text on saffron */
+  --accent-soft: rgb(237 174 73 / 0.16);
+  --rose: var(--raspberry);
+  --rose-ink: #ee8391; /* raspberry that stays >= 4.5:1 on navy */
+  --rose-soft: rgb(209 73 91 / 0.2);
+  --teal-ink: #58bccb;
+  --teal-soft: rgb(0 121 140 / 0.26);
+  --steel-ink: #8fb6d9;
+  --steel-soft: rgb(48 99 142 / 0.32);
 
-  --good: #16794f;
-  --good-soft: #e2f5e7;
-  --warn: #8a5300;
-  --warn-soft: var(--butter);
-  --bad: var(--pink-ink);
-  --bad-soft: var(--pink-soft);
+  --good: var(--teal-ink);
+  --good-soft: var(--teal-soft);
+  --warn: var(--saffron);
+  --warn-soft: var(--accent-soft);
+  --bad: var(--rose-ink);
+  --bad-soft: var(--rose-soft);
 
-  --brand: linear-gradient(120deg, var(--violet) 0%, var(--orchid) 55%, var(--pink) 100%);
-  --brand-deep: linear-gradient(135deg, var(--violet) 0%, #9d3ffd 100%); /* white text stays >= 4.5:1 */
-  --shadow: 0 1px 2px rgb(28 21 55 / 0.05), 0 6px 20px -6px rgb(94 43 255 / 0.14);
-  --shadow-lift: 0 2px 6px rgb(28 21 55 / 0.06), 0 22px 48px -14px rgb(94 43 255 / 0.34);
-  --shadow-float: 0 2px 8px rgb(28 21 55 / 0.06), 0 24px 60px -18px rgb(94 43 255 / 0.45);
+  --brand: linear-gradient(120deg, var(--saffron) 0%, var(--raspberry) 100%);
+  --brand-ring: linear-gradient(120deg, var(--saffron) 0%, var(--raspberry) 50%, var(--teal) 100%);
+  --cool: linear-gradient(135deg, var(--teal) 0%, var(--steel) 100%); /* white text stays >= 4.5:1 */
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 30px -12px rgb(0 0 0 / 0.55);
+  --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.35), 0 26px 60px -18px rgb(237 174 73 / 0.28);
+  --shadow-float: 0 2px 10px rgb(0 0 0 / 0.35), 0 28px 70px -20px rgb(0 0 0 / 0.8);
 }
 
 @theme inline {
   --color-canvas: var(--canvas);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-hover: var(--hover);
+  --color-track: var(--track);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-faint: var(--faint);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
-  --color-violet: var(--violet);
-  --color-orchid: var(--orchid);
-  --color-pink: var(--pink);
-  --color-butter: var(--butter);
-  --color-mint: var(--mint);
-  --color-violet-ink: var(--violet-ink);
-  --color-orchid-ink: var(--orchid-ink);
-  --color-pink-ink: var(--pink-ink);
-  --color-violet-soft: var(--violet-soft);
-  --color-orchid-soft: var(--orchid-soft);
-  --color-pink-soft: var(--pink-soft);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-rose: var(--rose);
+  --color-rose-ink: var(--rose-ink);
+  --color-rose-soft: var(--rose-soft);
+  --color-teal: var(--teal);
+  --color-teal-ink: var(--teal-ink);
+  --color-teal-soft: var(--teal-soft);
+  --color-steel: var(--steel);
+  --color-steel-ink: var(--steel-ink);
+  --color-steel-soft: var(--steel-soft);
+  --color-navy: var(--navy);
   --color-good: var(--good);
   --color-good-soft: var(--good-soft);
   --color-warn: var(--warn);
@@ -75,12 +85,12 @@
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 }
 
-/* Gradient fill, gradient text, and a gradient hairline border that works on translucent surfaces. */
+/* Gradient fill, gradient text, a cool fill for the user's bubbles, and a gradient hairline border. */
 @utility bg-brand {
   background-image: var(--brand);
 }
-@utility bg-brand-deep {
-  background-image: var(--brand-deep);
+@utility bg-cool {
+  background-image: var(--cool);
 }
 @utility text-brand {
   background-image: var(--brand);
@@ -96,7 +106,7 @@
     inset: 0;
     border-radius: inherit;
     padding: var(--ring-width, 1.5px);
-    background: var(--brand);
+    background: var(--brand-ring);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -106,9 +116,9 @@
   }
 }
 @utility glass {
-  background-color: rgb(255 255 255 / 0.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.5);
-  backdrop-filter: blur(20px) saturate(1.5);
+  background-color: rgb(7 41 59 / 0.66);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  backdrop-filter: blur(20px) saturate(1.3);
 }
 
 html,
@@ -123,17 +133,22 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  background-color: var(--mint);
+  background-color: var(--canvas);
   background-image:
-    radial-gradient(52rem 34rem at 8% -8%, rgb(94 43 255 / 0.13), transparent 62%),
-    radial-gradient(44rem 30rem at 100% 4%, rgb(252 109 171 / 0.16), transparent 60%),
-    radial-gradient(40rem 26rem at 70% 60%, rgb(192 76 253 / 0.07), transparent 65%),
-    radial-gradient(60rem 36rem at 30% 108%, rgb(247 246 197 / 0.95), transparent 62%);
+    radial-gradient(60rem 40rem at 0% -12%, rgb(0 61 91 / 0.95), transparent 62%),
+    radial-gradient(46rem 32rem at 100% -4%, rgb(48 99 142 / 0.5), transparent 60%),
+    radial-gradient(42rem 30rem at 88% 78%, rgb(0 121 140 / 0.24), transparent 65%),
+    radial-gradient(38rem 26rem at 8% 96%, rgb(209 73 91 / 0.16), transparent 65%),
+    radial-gradient(32rem 22rem at 50% 45%, rgb(237 174 73 / 0.05), transparent 70%);
   background-attachment: fixed;
 }
 
 ::selection {
-  background: rgb(192 76 253 / 0.22);
+  background: rgb(237 174 73 / 0.32);
+}
+
+::placeholder {
+  color: var(--faint);
 }
 
 .scroll-quiet {
@@ -155,7 +170,7 @@ body {
   animation: fade-up 260ms ease-out both;
 }
 
-/* "The agent is thinking" line: a highlight sweeping across the text. */
+/* "The agent is thinking" line: a warm highlight sweeping across the text. */
 @keyframes shimmer {
   from {
     background-position: 100% 0;
@@ -165,7 +180,7 @@ body {
   }
 }
 .shimmer {
-  background-image: linear-gradient(90deg, var(--ink) 0%, var(--ink) 38%, var(--violet) 48%, var(--pink) 55%, var(--ink) 66%, var(--ink) 100%);
+  background-image: linear-gradient(90deg, var(--ink) 0%, var(--ink) 38%, var(--saffron) 48%, var(--rose-ink) 56%, var(--ink) 66%, var(--ink) 100%);
   background-size: 250% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -186,6 +201,39 @@ body {
 }
 .animate-orb {
   animation: orb 1.4s ease-in-out infinite;
+}
+
+/* Waiting for the next question: three dots lifting gently, one after another. */
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  30% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+.typing-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 12px;
+}
+.typing-dots > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--muted);
+  animation: typing 1.3s ease-in-out infinite;
+}
+.typing-dots > span:nth-child(2) {
+  animation-delay: 0.16s;
+}
+.typing-dots > span:nth-child(3) {
+  animation-delay: 0.32s;
 }
 
 /* The composer glides from the centre of the landing screen to the bottom dock. */
@@ -210,7 +258,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
   .animate-orb,
-  .shimmer {
+  .shimmer,
+  .typing-dots > span {
     animation: none;
   }
   .shimmer {
