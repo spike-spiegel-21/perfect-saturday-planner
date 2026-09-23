@@ -1,6 +1,7 @@
-import { CircleAlert, ListTree, LoaderCircle, RefreshCw, Sun } from "lucide-react";
+import { CircleAlert, RefreshCw, Sun } from "lucide-react";
 import { useEffect, useRef } from "react";
-import type { OptionKind, RunOut } from "../types";
+import type { OptionKind, RunOut, Simulate } from "../types";
+import { AgentTrace, type TraceEntry } from "./AgentTrace";
 import { PlanResults } from "./PlanCards";
 
 export interface ChatMessage {
@@ -14,28 +15,32 @@ export interface ChatMessage {
 
 export interface PlanningState {
   startedAt: number;
-  lastNarration: string | null;
+  note: string | null;
 }
 
 interface Props {
   messages: ChatMessage[];
   run: RunOut | null;
+  trace: TraceEntry[];
   planning: PlanningState | null;
   elapsed: number;
   choosing: OptionKind | null;
   onChoose: (kind: OptionKind) => void;
-  onShowTrace: () => void;
+  canSimulate: boolean;
+  onSimulate: (sim: Simulate) => void;
+  /** Room to leave under the last message for the floating composer. */
+  bottomSpace: number;
 }
 
 function Avatar() {
   return (
-    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent" aria-hidden>
-      <Sun size={17} strokeWidth={2.2} />
+    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand text-white shadow-card" aria-hidden>
+      <Sun size={16} strokeWidth={2.4} />
     </span>
   );
 }
 
-export function Chat({ messages, run, planning, elapsed, choosing, onChoose, onShowTrace }: Props) {
+export function Chat({ messages, run, trace, planning, elapsed, choosing, onChoose, canSimulate, onSimulate, bottomSpace }: Props) {
   const endRef = useRef<HTMLDivElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const shownRun = useRef<string | null>(null);
@@ -60,21 +65,45 @@ export function Chat({ messages, run, planning, elapsed, choosing, onChoose, onS
     if (live) resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [run, planningOn]);
 
-  const anchored = run ? messages.some((m) => m.runId === run.run_id) : false;
+  // The agent's steps sit right under the message that kicked off the run:
+  // while planning, the latest assistant message; afterwards, the one just before the plan message.
+  const runIdx = run ? messages.findIndex((m) => m.runId === run.run_id) : -1;
+  let anchorId: string | null = null;
+  if (planning) {
+    anchorId = [...messages].reverse().find((m) => m.role === "assistant" && m.tone !== "error")?.id ?? null;
+  } else if (runIdx > 0 && messages[runIdx - 1].role === "assistant") {
+    anchorId = messages[runIdx - 1].id;
+  }
+
+  const traceBlock =
+    planning || trace.length > 0 ? (
+      <div className="sm:pl-11">
+        <div className="max-w-[42rem]">
+          <AgentTrace
+            entries={trace}
+            running={planningOn}
+            elapsed={planningOn ? elapsed : null}
+            note={planning?.note}
+            canSimulate={canSimulate}
+            onSimulate={onSimulate}
+          />
+        </div>
+      </div>
+    ) : null;
 
   const results = run ? (
-    <div ref={resultsRef} className="scroll-mt-4 pl-0 sm:pl-11">
+    <div ref={resultsRef} className="scroll-mt-20 sm:pl-11">
       <PlanResults run={run} onChoose={onChoose} choosing={choosing} />
     </div>
   ) : null;
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 py-6">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 pt-4">
       {messages.map((m) => (
         <div key={m.id} className="animate-fade-up space-y-3">
           {m.role === "user" ? (
             <div className="flex justify-end">
-              <p className="max-w-[85%] whitespace-pre-line break-words rounded-2xl rounded-tr-md border border-accent/20 bg-accent-soft px-4 py-2.5 text-[15px] leading-relaxed text-ink sm:max-w-[70%]">
+              <p className="max-w-[85%] whitespace-pre-line break-words rounded-3xl rounded-tr-lg bg-brand-deep px-4 py-2.5 text-[15px] leading-relaxed text-white shadow-card sm:max-w-[70%]">
                 {m.content}
               </p>
             </div>
@@ -83,8 +112,8 @@ export function Chat({ messages, run, planning, elapsed, choosing, onChoose, onS
               <Avatar />
               <div
                 className={[
-                  "max-w-[85%] rounded-2xl rounded-tl-md border px-4 py-2.5 text-[15px] leading-relaxed shadow-card sm:max-w-[42rem]",
-                  m.tone === "error" ? "border-bad/30 bg-bad-soft text-ink" : "border-line bg-surface text-ink",
+                  "max-w-[85%] rounded-3xl rounded-tl-lg border px-4 py-2.5 text-[15px] leading-relaxed shadow-card backdrop-blur sm:max-w-[42rem]",
+                  m.tone === "error" ? "border-pink/40 bg-pink-soft text-ink" : "border-line bg-white/85 text-ink",
                 ].join(" ")}
               >
                 <p className="flex items-start gap-2 whitespace-pre-line break-words">
@@ -95,7 +124,7 @@ export function Chat({ messages, run, planning, elapsed, choosing, onChoose, onS
                   <button
                     type="button"
                     onClick={m.retry}
-                    className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-line bg-surface px-2.5 py-1 text-sm font-medium text-ink hover:border-accent hover:text-accent-strong"
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-white px-3 py-1 text-sm font-medium text-ink hover:border-violet hover:text-violet-ink"
                   >
                     <RefreshCw size={14} aria-hidden /> Try again
                   </button>
@@ -103,34 +132,20 @@ export function Chat({ messages, run, planning, elapsed, choosing, onChoose, onS
               </div>
             </div>
           )}
-          {run && m.runId === run.run_id && results}
+          {m.id === anchorId && traceBlock}
+          {run && m.runId === run.run_id && (
+            <>
+              {!anchorId && traceBlock}
+              {results}
+            </>
+          )}
         </div>
       ))}
 
-      {run && !anchored && results}
+      {!anchorId && runIdx < 0 && traceBlock}
+      {run && runIdx < 0 && results}
 
-      {planning && (
-        <div className="flex items-start gap-3 animate-fade-up" aria-live="polite">
-          <Avatar />
-          <div className="max-w-[85%] rounded-2xl rounded-tl-md border border-line bg-surface px-4 py-3 shadow-card sm:max-w-[42rem]">
-            <p className="flex items-center gap-2 text-[15px] font-medium text-ink">
-              <LoaderCircle size={17} className="animate-spin text-accent" aria-hidden />
-              Planning your Saturday…
-              <span className="text-sm font-normal tabular-nums text-faint">{elapsed}s</span>
-            </p>
-            <p className="mt-1 text-sm leading-snug text-muted">
-              {planning.lastNarration ?? "Checking weather, events, food and travel, then validating three options."}
-            </p>
-            <button
-              type="button"
-              onClick={onShowTrace}
-              className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-accent-strong hover:underline"
-            >
-              <ListTree size={15} aria-hidden /> Watch the agent work
-            </button>
-          </div>
-        </div>
-      )}
+      <div style={{ height: bottomSpace }} aria-hidden />
       <div ref={endRef} />
     </div>
   );

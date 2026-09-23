@@ -1,6 +1,6 @@
 # Perfect Saturday Planner
 
-A small AI agent that plans one person's Saturday. You chat with it in free text. It asks only for what's still missing, then runs a bounded tool-calling loop over (mocked) events, restaurants, weather and travel data. It returns three validated options: **Time Saver · Recommended · Value for Money**. A live trace shows every step the agent took.
+A small AI agent that plans one person's Saturday. You chat with it in free text. It asks only for what's still missing, then runs a bounded tool-calling loop over (mocked) events, restaurants, weather and travel data. It returns three validated options: **Time Saver · Recommended · Value for Money**. Under the planning message, a collapsible trace shows a live one-line glimpse of what the agent is doing, and every thinking step and tool call when expanded.
 
 - **Model:** Claude Sonnet 5 via OpenRouter (`anthropic/claude-sonnet-5`)
 - **Backend:** Python 3.12, FastAPI, SQLite
@@ -90,7 +90,7 @@ The mock data covers Bangalore, Gurgaon, Delhi and Mumbai: about 28 real-soundin
 | Tool outage (`weather_down`, `no_restaurants`) | The model gets a structured error, adapts, and says so in the plan |
 | LLM down, out of credits, or a guard trip | A deterministic rule-based planner builds the three options from the same data and validator, and a banner explains why |
 
-The trace panel's **Test failure modes** menu re-runs a plan with those simulations (`POST /plan?simulate=weather_down`).
+Open **How I planned this** under a finished plan, then **Test how it copes**, to re-run it with one of those simulations (`POST /plan?simulate=weather_down`).
 
 ## Run it locally
 

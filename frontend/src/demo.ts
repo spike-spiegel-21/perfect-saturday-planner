@@ -376,14 +376,6 @@ export const demoRun: RunOut = {
   usage: { steps: 5, tool_calls: 7, prompt_tokens: 52340, completion_tokens: 4420, cost_usd: 0.071, seconds: 41.6 },
 };
 
-const intakeTrace: TraceEvent[] = [
-  { type: "parse_preferences", text: "i am at gurgaon, and my budget is ₹3000", slots: S1, missing: T1.missing, asking: T1.asking },
-  { type: "parse_preferences", text: "4 hours from 4pm", slots: S2, missing: T2.missing, asking: T2.asking },
-  { type: "parse_preferences", text: "Tired but want some fun", slots: S3, missing: T3.missing, asking: T3.asking },
-  { type: "parse_preferences", text: "Food, Live music, Walks", slots: S4, missing: T4.missing, asking: T4.asking },
-  { type: "parse_preferences", text: "Vegetarian, Avoid crowds", slots: S5, missing: [], asking: null },
-];
-
 const kinds = (...k: string[]) => ({ options: k.map((kind) => ({ kind })) });
 
 function runTrace(simulate: Simulate | null, run: RunOut): TraceEvent[] {
@@ -496,7 +488,7 @@ const conversation = [
   msg("assistant", T4.reply, T4),
 ];
 
-export function demoSession(mode: "planned" | "intake"): { session: SessionOut; trace: TraceEvent[] } {
+export function demoSession(mode: "planned" | "intake"): { session: SessionOut } {
   if (mode === "intake") {
     return {
       session: {
@@ -508,9 +500,8 @@ export function demoSession(mode: "planned" | "intake"): { session: SessionOut; 
         turn: T4,
         last_run: null,
         last_trace: [],
-        memory_hint: "Welcome back! Last time: Gurgaon · ₹3,000 · vegetarian.",
+        memory_hint: "Last time: Gurgaon · ₹3,000 · vegetarian",
       },
-      trace: intakeTrace.slice(0, 4),
     };
   }
   return {
@@ -530,18 +521,8 @@ export function demoSession(mode: "planned" | "intake"): { session: SessionOut; 
       last_trace: runTrace(null, demoRun),
       memory_hint: null,
     },
-    trace: [...intakeTrace, ...runTrace(null, demoRun)],
   };
 }
-
-export const demoMemory = {
-  summary: [
-    "Usually plans in Gurgaon; last budget ₹3,000.",
-    "Mentioned before: vegetarian, avoid crowded places.",
-    "Last pick: Recommended — Aravalli walk, Epicentre gig, Burma Burma.",
-  ],
-  profile: { home_city: "gurgaon", last_budget: 3000 },
-};
 
 /** Stand-in for POST /messages in demo mode: finishing the intake starts a replayed run. */
 export function demoTurn(text: string, slots: Slots): AssistantTurn {
@@ -566,7 +547,7 @@ export function demoTurn(text: string, slots: Slots): AssistantTurn {
     return { ...T5, slots: filled, parse: { method: "rules", ms: 1, updated: ["constraints"], vague: [] } };
   }
   return {
-    reply: "This is demo mode, so I can't re-plan from text. Use “Test failure modes” in the trace panel to replay a run.",
+    reply: "This is demo mode, so I can't re-plan from text. Open “How I planned this” above the cards to replay a run with a simulated failure.",
     asking: null,
     pills: [],
     multi: false,

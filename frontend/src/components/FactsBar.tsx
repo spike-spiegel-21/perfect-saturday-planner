@@ -37,9 +37,14 @@ export function FactsBar({ slots, asking }: { slots: Slots; asking: string | nul
   if (list.every((f) => !f.value)) return null;
 
   return (
-    <div className="border-b border-line bg-canvas/80">
+    <div className="sticky top-0 z-20 px-4 pb-1 pt-2">
+      {/* A frosted band that fades out downwards, so messages soften as they scroll under the chips. */}
+      <div
+        className="pointer-events-none absolute inset-x-0 -bottom-5 top-0 bg-canvas/40 backdrop-blur-md [mask-image:linear-gradient(to_bottom,black_55%,transparent)]"
+        aria-hidden
+      />
       <ul
-        className="scroll-quiet mx-auto flex w-full max-w-5xl items-center gap-1.5 overflow-x-auto px-4 py-2 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible"
+        className="relative mx-auto flex w-full max-w-5xl items-center gap-1.5 overflow-x-auto [scrollbar-width:none] sm:flex-wrap sm:overflow-visible"
         aria-label="What I know so far"
       >
         {list.map(({ field, icon: Icon, value }) => {
@@ -49,15 +54,15 @@ export function FactsBar({ slots, asking }: { slots: Slots; asking: string | nul
               key={field}
               title={value ? `${FIELD_LABEL[field]}: ${value}` : `${FIELD_LABEL[field]}: not answered yet`}
               className={[
-                "inline-flex max-w-[16rem] shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs",
+                "inline-flex max-w-[16rem] shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs backdrop-blur",
                 value
-                  ? "border-line bg-surface text-ink"
+                  ? "border-line bg-white/80 text-ink shadow-card"
                   : active
-                    ? "border-dashed border-accent text-accent-strong"
-                    : "border-dashed border-line-strong text-faint",
+                    ? "border-dashed border-violet bg-white/60 text-violet-ink"
+                    : "border-dashed border-line-strong bg-white/40 text-faint",
               ].join(" ")}
             >
-              <Icon size={13} className={value ? "shrink-0 text-accent" : "shrink-0"} aria-hidden />
+              <Icon size={13} className={value ? "shrink-0 text-violet" : "shrink-0"} aria-hidden />
               <span className="truncate">{value ?? FIELD_LABEL[field]}</span>
             </li>
           );

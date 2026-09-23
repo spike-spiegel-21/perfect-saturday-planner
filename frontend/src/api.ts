@@ -1,7 +1,6 @@
 import type {
   AssistantTurn,
   Health,
-  MemoryOut,
   OptionKind,
   SessionOut,
   Simulate,
@@ -62,8 +61,6 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ run_id: runId, kind }),
     }),
-  memory: (userId: string) => request<MemoryOut>(`/api/users/${userId}/memory`),
-  forget: (userId: string) => request<{ ok: boolean }>(`/api/users/${userId}`, { method: "DELETE" }),
 };
 
 /**

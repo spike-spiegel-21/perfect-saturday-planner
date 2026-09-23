@@ -214,15 +214,6 @@ export type TraceEvent =
   | { type: "plans"; run: RunOut }
   | ({ type: "usage" } & Usage)
   | { type: "error"; message: string }
-  | { type: "done" }
-  // Client-side only: one entry per intake turn, so the trace shows preference parsing too.
-  | {
-      type: "parse_preferences";
-      text: string;
-      slots: Slots;
-      missing: string[];
-      asking: string | null;
-      parse?: ParseInfo | null;
-    };
+  | { type: "done" };
 
 export type TraceEventType = TraceEvent["type"];
