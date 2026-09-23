@@ -325,6 +325,7 @@ class Validation(BaseModel):
     status: Literal["pass", "warn", "fail"]
     violations: list[str] = []
     warnings: list[str] = []
+    adjusted: list[str] = []   # start times the validator moved to make travel work, e.g. "MAP 16:10→16:25"
 
 
 class PlanOptionOut(BaseModel):

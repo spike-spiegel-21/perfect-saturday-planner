@@ -20,11 +20,13 @@ from app.tools.weather import bad_reason, hour_weather, is_bad
 from app.util import fmt, is_hhmm, rupees, slot_of, to_min
 
 OVER_BUDGET_OK = 1.10          # recommended may stretch to 110% if a trade-off says so
+MIN_FILL = 0.35                # stops should cover at least this share of a 2h+ window
 TRAVEL_SLACK_MIN = 5
 WINDOW_GRACE_MIN = 15
 
 _BUDGET_WORDS = re.compile(r"budget|₹|rs\.?|rupee|over|stretch|pricier|expensive|cost|splurge", re.I)
 _WEATHER_WORDS = re.compile(r"rain|weather|umbrella|wet|shower|aqi|air|smog|heat|hot|sun|humid", re.I)
+_SHORT_WORDS = re.compile(r"short|brief|quick|light|single stop|one stop|only one|budget|rain|nothing else fits", re.I)
 
 
 def evaluate(ctx, opt: PlanOptionIn, *, grounded: bool = True, source: str = "agent") -> PlanOptionOut:
@@ -62,31 +64,26 @@ def evaluate(ctx, opt: PlanOptionIn, *, grounded: bool = True, source: str = "ag
     items_out: list[PlanItemOut] = []
     prev_place, prev_end = ctx.start_point, None
     legs: list[Leg] = []
+    adjusted: list[str] = []
     spend = 0
-    for item, place, start, duration in resolved:
-        end = start + duration
-        # timing against the place
-        if place.kind == "event":
-            if item.start not in place.start_times:
-                violations.append(f"{place.name} starts at {', '.join(place.start_times)}, not {item.start}")
-        elif not any(to_min(o) <= start and end <= to_min(c) for o, c in place.open_hours):
-            hours = ", ".join(f"{o}–{c}" for o, c in place.open_hours)
-            violations.append(f"{place.name} is open {hours}; {fmt(start)}–{fmt(end)} doesn't fit")
-        # travel into this stop
-        depart = prev_end if prev_end is not None else max(ctx.window_start, start - 30)
+    for item, place, wanted, duration in resolved:
+        # Code owns the clock: travel into this stop, then the earliest workable start at or after the model's
+        # choice (next reachable showtime, or within opening hours). Only an impossible stop is a violation.
+        depart = prev_end if prev_end is not None else max(ctx.window_start, wanted - 30)
         lg = travel.leg(ctx.city, prev_place, place, depart, opt.kind)
         legs.append(lg)
-        if prev_end is None:
-            leave = start - lg.minutes
-            if leave < ctx.window_start - TRAVEL_SLACK_MIN:
-                violations.append(
-                    f"{place.name} at {fmt(start)} means leaving at {fmt(leave)}, before your window starts at {fmt(ctx.window_start)}"
-                )
-        elif start < prev_end + lg.minutes - TRAVEL_SLACK_MIN:
-            violations.append(
-                f"not enough time from {prev_place.name} to {place.name}: {lg.minutes} min {lg.mode} needed, "
-                f"{max(0, start - prev_end)} min planned"
-            )
+        arrive = (prev_end if prev_end is not None else ctx.window_start) + lg.minutes
+        start = settle_start(place, wanted, arrive, duration)
+        if start is None:
+            if place.kind == "event":
+                violations.append(f"{place.name}: no showtime ({', '.join(place.start_times)}) you can reach by {fmt(arrive)}")
+            else:
+                hours = ", ".join(f"{o}–{c}" for o, c in place.open_hours)
+                violations.append(f"{place.name} is open {hours}; {duration} min doesn't fit after arriving at {fmt(arrive)}")
+            start = max(wanted, arrive)
+        elif start != wanted:
+            adjusted.append(f"{place.name} {fmt(wanted)}→{fmt(start)}")
+        end = start + duration
         # price
         cost = place.base_price
         if item.tier and place.kind != "restaurant":
@@ -159,6 +156,14 @@ def evaluate(ctx, opt: PlanOptionIn, *, grounded: bool = True, source: str = "ag
         for _, p, _, _ in resolved
     ):
         warnings.append("no stop matches the user's interests directly")
+    available = ctx.window_end - ctx.window_start
+    at_stops = sum(d for _, _, _, d in resolved)
+    if resolved and available >= 120 and at_stops < MIN_FILL * available:
+        msg = f"only {at_stops} min at stops in a {available // 60}h window"
+        if any(_SHORT_WORDS.search(t) for t in opt.tradeoffs):
+            warnings.append(msg)
+        else:
+            violations.append(msg + ": add a stop or stay longer, or explain in tradeoffs why a short plan is best")
     stops = sum(1 for _, p, _, _ in resolved if p.kind != "restaurant")
     if prefs.energy == "low" and stops >= 3 and prefs.available_hours <= 5:
         warnings.append("that's a lot of stops for a tired day")
@@ -174,9 +179,22 @@ def evaluate(ctx, opt: PlanOptionIn, *, grounded: bool = True, source: str = "ag
             start=fmt(first_leave), end=fmt(home_by), budget_inr=budget,
             available_min=ctx.window_end - ctx.window_start,
         ),
-        validation=Validation(status=status, violations=violations, warnings=warnings),
+        validation=Validation(status=status, violations=violations, warnings=warnings, adjusted=adjusted),
         source=source,
     )
+
+
+def settle_start(place, wanted: int, arrive: int, duration: int) -> int | None:
+    """Earliest start at or after `wanted` that the user can actually make after arriving at `arrive`."""
+    if place.kind == "event":
+        ok = [to_min(t) for t in place.start_times if to_min(t) >= max(wanted, arrive - TRAVEL_SLACK_MIN)]
+        return min(ok) if ok else None
+    earliest = max(wanted, -(-arrive // 5) * 5)  # arrive, rounded up to 5 minutes
+    for o, c in sorted(place.open_hours):
+        s = max(earliest, to_min(o))
+        if s + duration <= to_min(c):
+            return s
+    return None
 
 
 def feedback(out: PlanOptionOut) -> dict:
@@ -193,6 +211,7 @@ def feedback(out: PlanOptionOut) -> dict:
         + ([f"{out.leg_home.mode} {out.leg_home.minutes}m ₹{out.leg_home.fare_inr} → back"] if out.leg_home else []),
         "violations": out.validation.violations,
         "warnings": out.validation.warnings,
+        **({"adjusted_times": out.validation.adjusted} if out.validation.adjusted else {}),
     }
 
 
@@ -220,7 +239,7 @@ VALIDATE_DESCRIPTION = (
 async def validate_plan(ctx, args: ValidateArgs) -> dict:
     results = []
     for opt in args.options:
-        ctx.drafts[opt.kind] = opt  # submit_plans can finalise these by reference
+        ctx.drafts[opt.kind] = opt  # kept so the loop can rescue validated work if it runs out of turns
         out = evaluate(ctx, opt)
         await _emit_validation(ctx, out)
         results.append(feedback(out))
@@ -239,13 +258,8 @@ def summarize_validate(result: dict) -> str:
 
 
 class SubmitArgs(BaseModel):
-    use_last_validated: bool = Field(
-        False, description="true = submit your latest validate_plan draft of each kind as-is (no need to repeat them)"
-    )
     options: list[PlanOptionIn] = Field(
-        default_factory=list, max_length=3,
-        description="the final options (one each: time_saver, recommended, value_for_money); with use_last_validated, "
-                    "only the ones that changed since validation",
+        min_length=3, max_length=3, description="exactly one each: time_saver, recommended, value_for_money"
     )
     assumptions: list[str] = Field(default_factory=list, description="assumptions you made, in plain words")
     weather_note: str | None = Field(None, description="one line on how the weather shaped the plan")
@@ -253,16 +267,13 @@ class SubmitArgs(BaseModel):
 
 SUBMIT_DESCRIPTION = (
     "Submit the final three options. This ends the task: it is accepted only if all three pass validation; "
-    "otherwise you get the problems back to fix. If your latest validate_plan drafts are clean, pass "
-    "use_last_validated=true instead of repeating them."
+    "otherwise you get the problems back to fix. Call it once your validate_plan results are clean."
 )
 
 
 async def submit_plans(ctx, args: SubmitArgs) -> dict:
     ctx.submit_attempts += 1
-    chosen = dict(ctx.drafts) if args.use_last_validated else {}
-    chosen.update({o.kind: o for o in args.options})
-    options = list(chosen.values()) if args.use_last_validated else args.options
+    options = args.options
     kinds = [o.kind for o in options]
     if sorted(kinds) != sorted(KIND_ORDER):
         return {"status": "rejected", "problems": {"options": [f"need exactly one each of {list(KIND_ORDER)}, got {kinds}"]}}

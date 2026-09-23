@@ -6,7 +6,7 @@ from collections import Counter
 
 from pydantic import BaseModel, Field
 
-from app.tools.places import compact, fits_window, rule_violation, score
+from app.tools.places import compact, fits_window, fits_with_travel, rule_violation, score
 from app.util import haversine_km
 
 MAX_RESULTS = 6
@@ -37,6 +37,8 @@ async def search_restaurants(ctx, args: RestaurantArgs) -> dict:
             hidden[reason] += 1
         elif not fits_window(p, ctx.window_start, ctx.window_end):
             hidden["closed during your window"] += 1
+        elif not fits_with_travel(ctx, p):
+            hidden["can't fit with travel there and back"] += 1
         else:
             usable.append(p)
 

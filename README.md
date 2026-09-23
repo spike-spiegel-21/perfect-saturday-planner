@@ -76,7 +76,7 @@ flowchart LR
 | `search_restaurants(max_cost_for_one, area, cuisine)` | Cost for **one person**, veg type, hours and crowd levels, with **cheaper alternatives** |
 | `get_travel(legs[])` | km, minutes and fare for walk / auto / cab / metro, plus a suggested mode. Uses haversine × road factor, city traffic by hour, and city fares |
 | `validate_plan(options[])` | Real totals and a list of violations to fix |
-| `submit_plans(options[3] \| use_last_validated)` | Accepted or rejected with the problems. This is the done signal |
+| `submit_plans(options[3])` | Accepted or rejected with the problems. This is the done signal |
 
 The mock data covers Bangalore, Gurgaon, Delhi and Mumbai: about 28 real-sounding places each, with Saturday showtimes, plausible prices and late-September weather (`backend/app/data/*.json`).
 

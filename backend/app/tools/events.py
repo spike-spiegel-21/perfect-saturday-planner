@@ -7,7 +7,7 @@ from collections import Counter
 from pydantic import BaseModel, Field
 
 from app.models import Category
-from app.tools.places import compact, fits_window, rule_violation, score
+from app.tools.places import compact, fits_window, fits_with_travel, rule_violation, score
 from app.util import haversine_km
 
 MAX_RESULTS = 6
@@ -40,6 +40,8 @@ async def search_events(ctx, args: EventsArgs) -> dict:
             hidden[reason] += 1
         elif not fits_window(p, ctx.window_start, ctx.window_end):
             hidden["outside your time window"] += 1
+        elif not fits_with_travel(ctx, p):
+            hidden["can't fit with travel there and back"] += 1
         elif args.indoor_only and not p.indoor:
             hidden["outdoor"] += 1
         else:
@@ -54,6 +56,8 @@ async def search_events(ctx, args: EventsArgs) -> dict:
         return -s
 
     matched = [p for p in usable if not args.categories or p.category in args.categories]
+    # A category with nothing usable is final for this run: say so, so the model doesn't search it again.
+    no_fit = sorted(c for c in args.categories if not any(p.category == c for p in usable))
     note = None
     if args.categories and len(matched) < 3:
         extra = sorted((p for p in usable if p not in matched), key=rank)[: 4 - len(matched)]
@@ -71,6 +75,10 @@ async def search_events(ctx, args: EventsArgs) -> dict:
         "results": [compact(ctx, p) for p in ranked],
         "hidden": {k: v for k, v in hidden.items() if v},
         **({"note": note} if note else {}),
+        **({"no_fit_categories": {
+            "categories": no_fit,
+            "why": "nothing in these fits the time window once travel there and back is counted; searching again won't change that",
+        }} if no_fit else {}),
     }
 
 

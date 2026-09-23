@@ -49,17 +49,6 @@ async def test_happy_path_submits_three_validated_options():
     assert result.trace == events
 
 
-async def test_submit_by_reference_to_validated_drafts():
-    llm = FakeLLM([SEARCH, plan_step("validate_plan", P), tool_step(("submit_plans", {"use_last_validated": True}))])
-    result, _ = await run(llm)
-    assert not result.run.fallback and len(result.run.options) == 3
-
-    lazy = FakeLLM([SEARCH, tool_step(("submit_plans", {"use_last_validated": True})), LLMError("stop")])
-    result, events = await run(lazy)
-    first = next(e for e in events if e["type"] == "tool_result" and e["name"] == "submit_plans")
-    assert "rejected" in first["summary"] and result.run.fallback
-
-
 async def test_repeating_the_same_call_ends_in_fallback():
     loop_forever = FakeLLM([tool_step(("get_weather", {"city": "Bangalore"}))], repeat_last=True)
     result, events = await run(loop_forever)
@@ -154,3 +143,21 @@ async def test_run_assumptions_include_intake_defaults():
     result, _ = await run(FakeLLM([LLMError("x")]), extra_assumptions=["You didn't pin down a budget, so I assumed ₹1,500."])
     assert result.run.assumptions[0].startswith("You didn't pin down a budget")
     assert any("start time" in a for a in result.run.assumptions)
+
+
+async def test_wrap_up_warning_two_turns_before_the_cap():
+    loop_forever = FakeLLM([tool_step(("get_weather", {"city": "Bangalore"}))], repeat_last=True)
+    _, events = await run(loop_forever)
+    wrap_at = [i for i, e in enumerate(events) if e["type"] == "guard" and e["name"] == "wrap_up"]
+    assert len(wrap_at) == 1
+    steps_before = [e["n"] for e in events[: wrap_at[0]] if e["type"] == "step"]
+    assert steps_before[-1] == Limits().max_steps - 2
+
+
+async def test_validated_drafts_are_rescued_when_the_model_never_submits():
+    stall = tool_step(("get_weather", {"city": "Bangalore"}))
+    llm = FakeLLM([SEARCH, plan_step("validate_plan", P), stall], repeat_last=True)
+    result, events = await run(llm)
+    assert not result.run.fallback
+    assert all(o.source == "agent" for o in result.run.options) and len(result.run.options) == 3
+    assert any(e["type"] == "guard" and e["name"] == "promoted_drafts" for e in events)

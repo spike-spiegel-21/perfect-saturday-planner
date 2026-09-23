@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from app.models import Place, Rules, interest_categories, interest_restaurant_tags
-from app.tools.travel import ROAD_FACTOR
+from app.tools.travel import ROAD_FACTOR, leg
 from app.tools.weather import hour_weather, is_bad
 from app.util import fmt, haversine_km, slot_of, to_min
 
@@ -53,6 +53,37 @@ def open_spans(p: Place, start: int, end: int) -> list[tuple[int, int]]:
 
 def fits_window(p: Place, start: int, end: int) -> bool:
     return bool(event_starts(p, start, end)) if p.kind == "event" else bool(open_spans(p, start, end))
+
+
+# Travel-aware fit: what the model gets told, so it doesn't draft times the validator will reject.
+TRAVEL_SLACK = 5    # same leniency as the validator
+RETURN_GRACE = 15
+
+
+def earliest_arrival(ctx, p: Place) -> int:
+    """Soonest the user can be at `p` if they leave the start point when their window opens."""
+    return ctx.window_start + leg(ctx.city, ctx.start_point, p, ctx.window_start, "recommended").minutes
+
+
+def reachable_starts(ctx, p: Place) -> list[str]:
+    """Event start times the user can make and still get back before the window closes."""
+    arrive = earliest_arrival(ctx, p)
+    out = []
+    for t in event_starts(p, ctx.window_start, ctx.window_end):
+        start, end = to_min(t), to_min(t) + (p.duration_min or 60)
+        back = leg(ctx.city, p, ctx.start_point, end, "recommended").minutes
+        if arrive <= start + TRAVEL_SLACK and end + back <= ctx.window_end + RETURN_GRACE:
+            out.append(t)
+    return out
+
+
+def fits_with_travel(ctx, p: Place) -> bool:
+    if p.kind == "event":
+        return bool(reachable_starts(ctx, p))
+    arrive = earliest_arrival(ctx, p)
+    back = leg(ctx.city, p, ctx.start_point, ctx.window_end - 60, "recommended").minutes
+    latest_end = ctx.window_end + RETURN_GRACE - back
+    return any(min(to_min(c), latest_end) - max(to_min(o), arrive) >= min_visit(p) for o, c in p.open_hours)
 
 
 def window_slots(start: int, end: int) -> list[str]:
@@ -129,6 +160,7 @@ def compact(ctx, p: Place, *, with_alternatives: bool = True) -> dict:
     base: dict = {
         "id": p.id, "name": p.name, "area": p.area,
         "km_from_start": km_from(ctx.start_point.lat, ctx.start_point.lng, p),
+        "earliest_arrival": fmt(earliest_arrival(ctx, p)),
     }
     if p.kind == "restaurant":
         base.update({
@@ -137,7 +169,7 @@ def compact(ctx, p: Place, *, with_alternatives: bool = True) -> dict:
     else:
         base.update({"kind": p.kind, "category": p.category, "duration_min": p.duration_min})
         if p.kind == "event":
-            base["start_times"] = event_starts(p, ctx.window_start, ctx.window_end) or p.start_times
+            base["start_times"] = reachable_starts(ctx, p) or event_starts(p, ctx.window_start, ctx.window_end)
         else:
             base["open"] = _hours(p)
         base["price_inr"] = p.base_price
@@ -162,7 +194,7 @@ def cheaper_alternatives(ctx, p: Place) -> list[dict]:
     out = []
     for alt_id in p.cheaper_alternative_ids:
         alt = ctx.places.get(alt_id)
-        if alt is None or rule_violation(alt, ctx.prefs.rules) or not fits_window(alt, ctx.window_start, ctx.window_end):
+        if alt is None or rule_violation(alt, ctx.prefs.rules) or not fits_with_travel(ctx, alt):
             continue
         ctx.seen_ids.add(alt.id)
         entry = {
@@ -171,7 +203,7 @@ def cheaper_alternatives(ctx, p: Place) -> list[dict]:
             "indoor": alt.indoor, "about": alt.blurb,
         }
         if alt.kind == "event":
-            entry["start_times"] = event_starts(alt, ctx.window_start, ctx.window_end)
+            entry["start_times"] = reachable_starts(ctx, alt)
         else:
             entry["open"] = _hours(alt)
         out.append(entry)

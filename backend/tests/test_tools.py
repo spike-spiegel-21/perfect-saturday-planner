@@ -145,3 +145,20 @@ async def test_every_city_has_searchable_options(city):
     ctx = ctx_for(prefs(city=city, city_name=c.name))
     assert (await search_events(ctx, EventsArgs()))["count"] >= 3
     assert (await search_restaurants(ctx, RestaurantArgs()))["count"] >= 2
+
+
+async def test_results_carry_earliest_arrival_and_only_reachable_showtimes():
+    ctx = ctx_for(prefs(rules={}))
+    out = await search_events(ctx, EventsArgs())
+    for r in out["results"]:
+        assert to_min(r["earliest_arrival"]) >= ctx.window_start
+        if r.get("kind") == "event":
+            assert all(to_min(t) + 5 >= to_min(r["earliest_arrival"]) for t in r["start_times"])
+
+
+async def test_categories_with_nothing_that_fits_are_flagged():
+    # 16:00-17:00 leaves no room for any evening gig, walk or not
+    ctx = ctx_for(prefs(start_time="16:00", available_hours=1, rules={}))
+    out = await search_events(ctx, EventsArgs(categories=["music", "theatre"]))
+    assert set(out["no_fit_categories"]["categories"]) <= {"music", "theatre"}
+    assert out["no_fit_categories"]["categories"]

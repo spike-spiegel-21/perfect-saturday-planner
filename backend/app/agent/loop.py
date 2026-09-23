@@ -12,12 +12,13 @@ import time
 from dataclasses import dataclass, field
 
 from app.agent.fallback import build_fallback
-from app.agent.prompts import NUDGE, SYSTEM_PROMPT, brief
+from app.agent.prompts import NUDGE, SYSTEM_PROMPT, WRAP_UP, brief
 from app.config import Limits
 from app.llm import LLM, LLMError
-from app.models import KIND_ORDER, CityData, PlanOptionOut, Preferences, RunOut
+from app.models import KIND_LABELS, KIND_ORDER, CityData, PlanOptionOut, Preferences, RunOut
 from app.tools import build_tools
 from app.tools.registry import Emit, dispatch, make_context
+from app.tools.validate import evaluate
 from app.util import fmt
 
 FALLBACK_REASONS = {
@@ -134,8 +135,14 @@ async def run_agent(
             if ctx.total_calls >= limits.max_tool_calls:
                 reason = "tool_budget"
                 break
+            if step == limits.max_steps - 2:  # warn before the cap instead of just hitting it
+                await record({"type": "guard", "name": "wrap_up", "detail": "two turns left; asked the model to submit"})
+                messages.append({"role": "user", "content": WRAP_UP})
         else:
             reason = "max_steps"
+
+    if not ctx.accepted and ctx.drafts:
+        await _promote_drafts(ctx, record)
 
     options: dict[str, PlanOptionOut]
     if ctx.accepted:
@@ -168,6 +175,25 @@ async def run_agent(
     await record({"type": "usage", **usage})
     await record({"type": "plans", "run": run.model_dump()})
     return RunResult(run=run, trace=trace)
+
+
+async def _promote_drafts(ctx, record) -> None:
+    """The loop ended without an accepted submit: keep any validated drafts that still pass, so good agent work
+    isn't thrown away for the rule-based planner. All three valid and distinct counts as done."""
+    kept = []
+    for kind, draft in ctx.drafts.items():
+        if kind in ctx.best:
+            continue
+        out = evaluate(ctx, draft)
+        if out.validation.status != "fail":
+            ctx.best[kind] = out
+            kept.append(KIND_LABELS[kind])
+    stop_sets = {tuple(sorted(i.ref_id for i in o.items)) for o in ctx.best.values()}
+    if set(ctx.best) == set(KIND_ORDER) and len(stop_sets) == 3:
+        ctx.accepted = True
+    if kept:
+        await record({"type": "guard", "name": "promoted_drafts",
+                      "detail": f"kept validated drafts the model didn't submit: {', '.join(kept)}"})
 
 
 def _clip(text: str, n: int) -> str:

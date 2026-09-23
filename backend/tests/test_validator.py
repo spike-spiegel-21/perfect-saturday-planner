@@ -50,11 +50,20 @@ def test_unknown_and_ungrounded_ids(ctx):
     assert "unknown place id" in text and "was not returned by a search" in text
 
 
-def test_event_must_start_at_a_listed_time(ctx):
+def test_event_times_snap_to_the_next_reachable_showtime(ctx):
+    event = next(p for p in ctx.city.places if p.kind == "event" and len(p.start_times) >= 2
+                 and to_min(p.start_times[0]) >= ctx.window_start + 60)
+    first = to_min(event.start_times[0])
+    out = evaluate(ctx, PlanOptionIn(kind="recommended", title="t", pitch="p", items=[item(event, fmt(first + 10))]))
+    assert out.items[0].start in event.start_times and to_min(out.items[0].start) > first
+    assert out.validation.adjusted and not any("showtime" in v for v in out.validation.violations)
+
+
+def test_unreachable_showtime_is_a_violation(ctx):
     event = next(p for p in ctx.city.places if p.kind == "event")
-    bad = fmt(to_min(event.start_times[0]) + 10)
-    out = evaluate(ctx, PlanOptionIn(kind="recommended", title="t", pitch="p", items=[item(event, bad)]))
-    assert any("starts at" in v for v in out.validation.violations)
+    last = max(to_min(t) for t in event.start_times)
+    out = evaluate(ctx, PlanOptionIn(kind="recommended", title="t", pitch="p", items=[item(event, fmt(last + 30))]))
+    assert any("no showtime" in v for v in out.validation.violations)
 
 
 def test_restaurant_must_be_open(ctx):
@@ -65,14 +74,16 @@ def test_restaurant_must_be_open(ctx):
     assert any("is open" in v for v in out.validation.violations)
 
 
-def test_travel_time_between_stops_is_enforced(ctx):
+def test_travel_time_between_stops_is_respected(ctx):
     acts = [p for p in ctx.city.places if p.kind == "activity" and any(to_min(o) <= 13 * 60 for o, _ in p.open_hours)]
     a, b = max(((x, y) for x in acts for y in acts if x.id != y.id),
                key=lambda xy: abs(xy[0].lat - xy[1].lat) + abs(xy[0].lng - xy[1].lng))
     end_a = 13 * 60 + a.typical_min
     out = evaluate(ctx, PlanOptionIn(kind="recommended", title="t", pitch="p",
                                      items=[item(a, "13:00"), item(b, fmt(end_a))]))
-    assert any("not enough time" in v for v in out.validation.violations)
+    second = out.items[1]
+    assert to_min(second.start) >= to_min(out.items[0].end) + second.leg_before.minutes
+    assert any(b.name in adj for adj in out.validation.adjusted)
 
 
 def test_budget_thresholds(ctx):
@@ -148,3 +159,14 @@ async def test_submit_rejects_bad_sets_and_accepts_good(ctx):
     res = await submit_plans(ctx, SubmitArgs(options=good))
     assert res["status"] == "accepted" and ctx.accepted
     assert set(ctx.best) == {"time_saver", "recommended", "value_for_money"}
+
+
+def test_thin_plans_must_fill_the_window_or_explain(ctx):
+    cafe = next(p for p in ctx.city.places if p.kind == "restaurant" and p.veg != "non_veg"
+                and any(to_min(o) <= 13 * 60 and to_min(c) >= 14 * 60 for o, c in p.open_hours))
+    thin = PlanOptionIn(kind="recommended", title="t", pitch="p", items=[item(cafe, "13:00", duration_min=45)])
+    assert any("min at stops" in v for v in evaluate(ctx, thin).validation.violations)
+    thin.tradeoffs = ["Keeping it short and light because it's raining all afternoon."]
+    out = evaluate(ctx, thin)
+    assert not any("min at stops" in v for v in out.validation.violations)
+    assert any("min at stops" in w for w in out.validation.warnings)
