@@ -1,0 +1,28 @@
+[project]
+name = "saturday-planner-backend"
+version = "0.1.0"
+description = "Perfect Saturday Planner: agent harness (execution loop, tools, memory) behind a FastAPI API"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "openai>=1.60",
+    "pydantic>=2.9",
+    "python-dotenv>=1.0",
+    "uvicorn[standard]>=0.30",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.27",
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+]
