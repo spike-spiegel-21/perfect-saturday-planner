@@ -153,3 +153,9 @@ def test_default_start_times():
     assert default_start(4, "20:00") == "16:00"
     assert default_start(4, "18:00") == "14:00"
     assert ORDER.index("mood") < ORDER.index("interests") < ORDER.index("constraints")
+
+
+async def test_refinement_pills_work_without_the_model():
+    slots = Slots(city="gurgaon", city_name="Gurgaon", budget_inr=3000, available_hours=4, mood="tired", interests=["food"], constraints=[])
+    res = await handle_turn(NO_LLM, "Make it cheaper, Less travel", slots, TurnState(), status="planned", profile=None)
+    assert res.replan and "cheaper" in res.state.refinement

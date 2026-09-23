@@ -75,7 +75,7 @@ GREETING = (
     "how much time you have, how you're feeling."
 )
 GREETING_PLACEHOLDER = "e.g. I'm in Gurgaon and my budget is ₹3000"
-REFINE_PILLS = ("Make it cheaper", "Shorter plan", "More outdoors", "More indoors", "Different food")
+REFINE_PILLS = ("Make it cheaper", "Less travel", "More outdoors", "Start later", "Swap dinner")
 REFINE_PLACEHOLDER = "e.g. make it cheaper, or swap dinner for street food"
 DEFAULTS = {"budget": 1500, "available_time": 4.0, "mood": "open to anything", "interests": ["surprise me"], "constraints": []}
 
@@ -154,19 +154,21 @@ Rules:
 
 async def llm_extract(llm: LLM, text: str, slots: Slots, asking: str | None) -> Extraction:
     known = {k: v for k, v in slots.model_dump(exclude={"rules", "city"}).items() if v not in (None, [])}
+    if slots.available_hours and not slots.start_time:
+        known["start_time"] = default_start(slots.available_hours, slots.rules.end_by) + " (assumed)"
     messages = [
         {"role": "system", "content": EXTRACT_PROMPT.format(asking=asking or "anything (opening question)", known=json.dumps(known, ensure_ascii=False))},
         {"role": "user", "content": text},
     ]
     fmt_ = {"type": "json_schema", "json_schema": {"name": "preferences", "strict": True, "schema": EXTRACT_SCHEMA}}
     try:
-        res = await llm.chat(messages, response_format=fmt_, reasoning={"enabled": False}, max_tokens=700, cache=False)
+        res = await llm.chat(messages, response_format=fmt_, reasoning={"enabled": False}, max_tokens=1000, cache=False)
     except LLMError as exc:
         if exc.code != "bad_request":
             raise
         # schema mode refused upstream: ask for plain JSON instead
         messages[0]["content"] += "\nReturn only a JSON object with exactly these keys: " + ", ".join(EXTRACT_SCHEMA["required"])
-        res = await llm.chat(messages, reasoning={"enabled": False}, max_tokens=700, cache=False)
+        res = await llm.chat(messages, reasoning={"enabled": False}, max_tokens=1000, cache=False)
     raw = res.text
     match = re.search(r"\{.*\}", raw, re.S)
     try:
@@ -181,6 +183,7 @@ _CLOCK = r"(?<![\d₹,.])(\d{1,2})(?::(\d{2}))?\s*(am|pm)?(?![\d,])"
 _RANGE = re.compile(_CLOCK + r"\s*(?:-|–|to|till|until)\s*" + _CLOCK, re.I)
 _FROM = re.compile(r"(?:from|after|at|starting)\s+" + _CLOCK, re.I)
 _NONE = re.compile(r"^\s*(none|no|nope|nothing|nah|no constraints|nothing really|all good|na)\s*[.!]?\s*$", re.I)
+_REFINE = re.compile(r"\b(cheaper|less travel|more (?:outdoors?|indoors?)|start later|later start|earlier|swap|shorter|longer|different|change|instead|less walking)\b", re.I)
 _MOOD_WORDS = re.compile(r"\b(tired|exhausted|sleepy|lazy|bored|stressed|chill|relaxed|happy|excited|adventurous|energetic|social|romantic|low|meh)\b", re.I)
 
 
@@ -241,6 +244,8 @@ def regex_extract(text: str, asking: str | None) -> Extraction:
         found = [k for k in ("food", "music", "walk", "movie", "comedy", "art", "museum", "cafe", "shopping", "nature", "theatre", "gaming") if k in low]
         if found:
             ex.interests = found
+    if asking is None and _REFINE.search(t):
+        ex.refinement_note = t[:120]
     if asking == "constraints" and _NONE.match(t):
         ex.constraints = []
     elif asking == "constraints" and t:

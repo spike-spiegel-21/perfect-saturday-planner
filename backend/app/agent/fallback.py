@@ -185,11 +185,18 @@ def _dress(ctx, out: PlanOptionOut) -> PlanOptionOut:
         out.title = "Most fun per rupee"
         out.pitch = f"{rupees(out.totals.cost_inr)} all-in ({share}% of your budget), using free and cheaper picks."
     else:
-        out.title = " + ".join(n.split(":")[0].split("(")[0].strip() for n in names[:2])
+        out.title = " + ".join(_short(n) for n in names[:2])
         out.pitch = f"Built around your mood ({ctx.prefs.mood}) and what you're into: {', '.join(ctx.prefs.interests)}."
     if out.validation.status == "fail":
         out.tradeoffs.append("Couldn't fit everything you asked for; this is the closest plan. See the issues below.")
     return out
+
+
+def _short(name: str) -> str:
+    """'Museo Camera, Centre for the Photographic Arts' -> 'Museo Camera'."""
+    for sep in (":", "(", ",", " at "):
+        name = name.split(sep)[0]
+    return name.strip()
 
 
 def _why(ctx, p: Place, start: int) -> str:
@@ -198,6 +205,8 @@ def _why(ctx, p: Place, start: int) -> str:
     if p.kind == "restaurant":
         if prefs.rules.vegetarian and p.veg == "pure_veg":
             reasons.append("a fully vegetarian kitchen")
+        elif prefs.rules.vegetarian:
+            reasons.append("plenty of vegetarian options")
         if any("food" in i for i in joined):
             reasons.append(f"{p.cuisine} for your love of food")
         elif set(p.tags) & interest_restaurant_tags(prefs.interests):

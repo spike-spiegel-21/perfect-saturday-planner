@@ -36,9 +36,9 @@ class Limits:
         "submit_plans": 3,              # the done signal; after 3 rejections the fallback fills gaps
     })
     run_deadline_s: float = 150.0
-    llm_timeout_s: float = 60.0
+    llm_timeout_s: float = 90.0
     tool_timeout_s: float = 5.0
-    max_tokens: int = 6000
+    max_tokens: int = 12000            # room for thinking + a full submit_plans call; only generated tokens cost
 
 
 @dataclass(frozen=True)

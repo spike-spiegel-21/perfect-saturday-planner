@@ -209,7 +209,8 @@ def _iso(dt: datetime) -> str:
 def _run_message(run: RunOut, city_name: str) -> str:
     if not run.options:
         return "I couldn't fit anything into that window. Try a longer window or a different time."
-    text = f"Here are {len(run.options)} ways to spend your Saturday in {city_name}."
+    count = {1: "one way", 2: "two ways", 3: "three ways"}.get(len(run.options), f"{len(run.options)} ways")
+    text = f"Here are {count} to spend your Saturday in {city_name}. Pick one and I'll remember it for next time."
     if run.fallback:
         text += f" (Rule-based backup: {run.fallback_reason}.)"
     return text

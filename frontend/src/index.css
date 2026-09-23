@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+/* Colour tokens. Components only use the utilities generated from @theme below
+   (bg-canvas, text-ink, border-line, bg-accent, ...), so dark mode is just these values. */
+:root {
+  color-scheme: light;
+  --canvas: #fbf7f1;
+  --surface: #ffffff;
+  --surface-2: #f5efe6;
+  --line: #e9dfd1;
+  --line-strong: #d8cab7;
+  --ink: #2a2320;
+  --muted: #76695f;
+  --faint: #a3968b;
+  --accent: #e0662d;
+  --accent-strong: #b94f1c;
+  --accent-soft: #fdebdf;
+  --accent-ink: #ffffff;
+  --good: #2f7d55;
+  --good-soft: #e3f3e9;
+  --warn: #a8660c;
+  --warn-soft: #fcf0d9;
+  --bad: #c0392b;
+  --bad-soft: #fbe5e2;
+  --info: #3b6ea5;
+  --info-soft: #e5eef8;
+  --shadow: 0 1px 2px rgb(60 40 20 / 0.06), 0 4px 16px rgb(60 40 20 / 0.06);
+  --shadow-lift: 0 2px 4px rgb(60 40 20 / 0.08), 0 12px 32px rgb(224 102 45 / 0.16);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --canvas: #171311;
+    --surface: #211b18;
+    --surface-2: #2a2320;
+    --line: #3a302a;
+    --line-strong: #4b3f37;
+    --ink: #f3ece6;
+    --muted: #b3a498;
+    --faint: #85776c;
+    --accent: #f08a4b;
+    --accent-strong: #f6a370;
+    --accent-soft: #3a2418;
+    --accent-ink: #1b120d;
+    --good: #6cc592;
+    --good-soft: #1d3326;
+    --warn: #e7b35a;
+    --warn-soft: #3a2c14;
+    --bad: #f08577;
+    --bad-soft: #3d1f1b;
+    --info: #8db7e6;
+    --info-soft: #1c2a3b;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.25);
+    --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.35), 0 12px 32px rgb(240 138 75 / 0.14);
+  }
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --shadow-card: var(--shadow);
+  --shadow-lift: var(--shadow-lift);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    "Noto Sans", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+/* Quiet scrollbars inside panels */
+.scroll-quiet {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 220ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up {
+    animation: none;
+  }
+}
