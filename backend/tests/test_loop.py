@@ -152,12 +152,3 @@ async def test_wrap_up_warning_two_turns_before_the_cap():
     assert len(wrap_at) == 1
     steps_before = [e["n"] for e in events[: wrap_at[0]] if e["type"] == "step"]
     assert steps_before[-1] == Limits().max_steps - 2
-
-
-async def test_validated_drafts_are_rescued_when_the_model_never_submits():
-    stall = tool_step(("get_weather", {"city": "Bangalore"}))
-    llm = FakeLLM([SEARCH, plan_step("validate_plan", P), stall], repeat_last=True)
-    result, events = await run(llm)
-    assert not result.run.fallback
-    assert all(o.source == "agent" for o in result.run.options) and len(result.run.options) == 3
-    assert any(e["type"] == "guard" and e["name"] == "promoted_drafts" for e in events)

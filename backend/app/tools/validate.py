@@ -239,7 +239,6 @@ VALIDATE_DESCRIPTION = (
 async def validate_plan(ctx, args: ValidateArgs) -> dict:
     results = []
     for opt in args.options:
-        ctx.drafts[opt.kind] = opt  # kept so the loop can rescue validated work if it runs out of turns
         out = evaluate(ctx, opt)
         await _emit_validation(ctx, out)
         results.append(feedback(out))

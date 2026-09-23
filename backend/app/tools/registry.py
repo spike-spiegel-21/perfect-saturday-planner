@@ -47,7 +47,6 @@ class RunContext:
     cache: dict[str, dict] = field(default_factory=dict)
     weather_summary: str | None = None
     submit_attempts: int = 0
-    drafts: dict[str, Any] = field(default_factory=dict)          # latest validated draft per kind (PlanOptionIn)
     best: dict[str, PlanOptionOut] = field(default_factory=dict)  # valid options from submissions so far
     accepted: bool = False
     submitted_assumptions: list[str] = field(default_factory=list)
