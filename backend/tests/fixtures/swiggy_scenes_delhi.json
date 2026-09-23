@@ -1,0 +1,1455 @@
+{
+ "search_events": {
+  "input": {
+   "query": "Delhi",
+   "latitude": 28.6139,
+   "longitude": 77.209
+  },
+  "result": {
+   "suggestions": [
+    {
+     "eventId": "100120031",
+     "eventName": "Working With AI Agents | Chai, Chats & A Walk (Hosted By Allin1Place Delhi Chapter)",
+     "location": "Connaught Place, Delhi"
+    },
+    {
+     "eventId": "100089758",
+     "eventName": "Museum Of Illusions New Delhi",
+     "location": "Connaught Place, Delhi"
+    },
+    {
+     "eventId": "100115246",
+     "eventName": "The Old Delhi Sundowner",
+     "location": "Chandni Chowk, Delhi"
+    },
+    {
+     "eventId": "100115247",
+     "eventName": "The Old Delhi Dinner",
+     "location": "Chandni Chowk, Delhi"
+    },
+    {
+     "eventId": "100078249",
+     "eventName": "Go Rug Yourself Tufting Workshop Delhi",
+     "location": "Lajpat Nagar, Delhi"
+    },
+    {
+     "eventId": "100119560",
+     "eventName": "Picnic - Delhi",
+     "location": "Hauz Khas, Delhi"
+    },
+    {
+     "eventId": "100119581",
+     "eventName": "Chai Pe Charcha - Delhi",
+     "location": "Hauz Khas, Delhi"
+    },
+    {
+     "eventId": "100119580",
+     "eventName": "Truth And Dare - Delhi",
+     "location": "Hauz Khas, Delhi"
+    },
+    {
+     "eventId": "100119582",
+     "eventName": "Social Mixer - Delhi",
+     "location": "Hauz Khas, Delhi"
+    },
+    {
+     "eventId": "100119584",
+     "eventName": "Coffee Conversations - Delhi",
+     "location": "Hauz Khas, Delhi"
+    },
+    {
+     "eventId": "100119567",
+     "eventName": "Confession Night - Delhi",
+     "location": "Hauz Khas, Delhi"
+    },
+    {
+     "eventId": "100119588",
+     "eventName": "Roast Battle - Delhi",
+     "location": "Hauz Khas, Delhi"
+    }
+   ]
+  }
+ },
+ "list_event_shows": [
+  {
+   "input": {
+    "eventId": "100117513",
+    "latitude": 28.6139,
+    "longitude": 77.209
+   },
+   "result": {
+    "eventShowListing": {
+     "dateSummary": [
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 24
+       },
+       "totalAvailableInventory": 10,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 25
+       },
+       "totalAvailableInventory": 10,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 26
+       },
+       "totalAvailableInventory": 10,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 27
+       },
+       "totalAvailableInventory": 10,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 28
+       },
+       "totalAvailableInventory": 10,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 29
+       },
+       "totalAvailableInventory": 10,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 30
+       },
+       "totalAvailableInventory": 10,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      }
+     ],
+     "venueDetails": [
+      {
+       "id": "3417",
+       "name": "The Comedy Theatre - Hauz Khass Village",
+       "description": "",
+       "location": {
+        "latLng": {
+         "latitude": 28.554559,
+         "longitude": 77.195009
+        },
+        "cityId": 4,
+        "zoneId": 0,
+        "poiIds": []
+       },
+       "address": "The Comedy Theatre - Hauz Khass Village, Hauz Khas Village, Deer Park, Hauz Khas, New Delhi, Delhi, India",
+       "type": "VENUE_TYPE_SPECIFIC",
+       "auditoriums": [],
+       "distance": 6738.350854102113,
+       "cityDisplayName": "Delhi",
+       "localityDisplayName": "Hauz Khas"
+      }
+     ],
+     "dateGroupedEventShow": [
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 24
+       },
+       "eventShow": [
+        {
+         "id": "100453098",
+         "name": "2026-09-24 16:30:00-2026-09-24 17:30:00",
+         "timeRange": {
+          "startTime": "2026-09-24T16:30:00Z",
+          "endTime": "2026-09-24T17:30:00Z"
+         },
+         "eventId": "100117513",
+         "venue": {
+          "type": "VENUE_TYPE_SPECIFIC",
+          "venueId": "3417",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 10,
+         "tickets": [
+          {
+           "id": "1148624",
+           "name": "Entry Pass For 1",
+           "availableInventory": 10,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass admits 1 individual only</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790267400,
+         "show_time_ist": "Thu, 24 Sept, 10:00 pm"
+        }
+       ]
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 25
+       },
+       "eventShow": [
+        {
+         "id": "100453099",
+         "name": "2026-09-25 16:30:00-2026-09-25 17:30:00",
+         "timeRange": {
+          "startTime": "2026-09-25T16:30:00Z",
+          "endTime": "2026-09-25T17:30:00Z"
+         },
+         "eventId": "100117513",
+         "venue": {
+          "type": "VENUE_TYPE_SPECIFIC",
+          "venueId": "3417",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 10,
+         "tickets": [
+          {
+           "id": "1148625",
+           "name": "Entry Pass For 1",
+           "availableInventory": 10,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass admits 1 individual only</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790353800,
+         "show_time_ist": "Fri, 25 Sept, 10:00 pm"
+        }
+       ]
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 26
+       },
+       "eventShow": [
+        {
+         "id": "100453100",
+         "name": "2026-09-26 16:30:00-2026-09-26 17:30:00",
+         "timeRange": {
+          "startTime": "2026-09-26T16:30:00Z",
+          "endTime": "2026-09-26T17:30:00Z"
+         },
+         "eventId": "100117513",
+         "venue": {
+          "type": "VENUE_TYPE_SPECIFIC",
+          "venueId": "3417",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 10,
+         "tickets": [
+          {
+           "id": "1148626",
+           "name": "Entry Pass For 1",
+           "availableInventory": 10,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass admits 1 individual only</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790440200,
+         "show_time_ist": "Sat, 26 Sept, 10:00 pm"
+        }
+       ]
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 27
+       },
+       "eventShow": [
+        {
+         "id": "100453101",
+         "name": "2026-09-27 16:30:00-2026-09-27 17:30:00",
+         "timeRange": {
+          "startTime": "2026-09-27T16:30:00Z",
+          "endTime": "2026-09-27T17:30:00Z"
+         },
+         "eventId": "100117513",
+         "venue": {
+          "type": "VENUE_TYPE_SPECIFIC",
+          "venueId": "3417",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 10,
+         "tickets": [
+          {
+           "id": "1148627",
+           "name": "Entry Pass For 1",
+           "availableInventory": 10,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass admits 1 individual only</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790526600,
+         "show_time_ist": "Sun, 27 Sept, 10:00 pm"
+        }
+       ]
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 28
+       },
+       "eventShow": [
+        {
+         "id": "100453102",
+         "name": "2026-09-28 16:30:00-2026-09-28 17:30:00",
+         "timeRange": {
+          "startTime": "2026-09-28T16:30:00Z",
+          "endTime": "2026-09-28T17:30:00Z"
+         },
+         "eventId": "100117513",
+         "venue": {
+          "type": "VENUE_TYPE_SPECIFIC",
+          "venueId": "3417",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 10,
+         "tickets": [
+          {
+           "id": "1148628",
+           "name": "Entry Pass For 1",
+           "availableInventory": 10,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass admits 1 individual only</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790613000,
+         "show_time_ist": "Mon, 28 Sept, 10:00 pm"
+        }
+       ]
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 29
+       },
+       "eventShow": [
+        {
+         "id": "100453103",
+         "name": "2026-09-29 16:30:00-2026-09-29 17:30:00",
+         "timeRange": {
+          "startTime": "2026-09-29T16:30:00Z",
+          "endTime": "2026-09-29T17:30:00Z"
+         },
+         "eventId": "100117513",
+         "venue": {
+          "type": "VENUE_TYPE_SPECIFIC",
+          "venueId": "3417",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 10,
+         "tickets": [
+          {
+           "id": "1148629",
+           "name": "Entry Pass For 1",
+           "availableInventory": 10,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass admits 1 individual only</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790699400,
+         "show_time_ist": "Tue, 29 Sept, 10:00 pm"
+        }
+       ]
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 30
+       },
+       "eventShow": [
+        {
+         "id": "100453104",
+         "name": "2026-09-30 16:30:00-2026-09-30 17:30:00",
+         "timeRange": {
+          "startTime": "2026-09-30T16:30:00Z",
+          "endTime": "2026-09-30T17:30:00Z"
+         },
+         "eventId": "100117513",
+         "venue": {
+          "type": "VENUE_TYPE_SPECIFIC",
+          "venueId": "3417",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 10,
+         "tickets": [
+          {
+           "id": "1148630",
+           "name": "Entry Pass For 1",
+           "availableInventory": 10,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass admits 1 individual only</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790785800,
+         "show_time_ist": "Wed, 30 Sept, 10:00 pm"
+        }
+       ]
+      }
+     ],
+     "eventInfo": {
+      "id": "100117513",
+      "name": "Late Night StandUp Comedy Show",
+      "description": "",
+      "timeRange": {
+       "startTime": "2026-09-06T16:30:00Z",
+       "endTime": "2026-09-30T17:30:00Z"
+      },
+      "eventCategory": {
+       "id": "",
+       "name": ""
+      },
+      "languages": [
+       "english",
+       "hindi"
+      ],
+      "ageGroup": "16 yrs+",
+      "eventDuration": {
+       "type": "TYPE_HOURS",
+       "value": 1
+      },
+      "seatingArrangement": "SEATING_ARRANGEMENT_SEATED",
+      "tags": [
+       "stand up comedy",
+       "Open Mic Comedy",
+       "Kid's Friendly",
+       "comedy_07",
+       "CT_2026",
+       "kids_friendly",
+       "Collection1_v2"
+      ],
+      "status": "ENTITIES_DISCOVERY_STATE_INVALID",
+      "ticketStartPrice": null,
+      "recurring": true,
+      "contacts": [],
+      "artists": [],
+      "tour": null,
+      "thingsToRemember": [],
+      "tnc": "",
+      "layout": "LAYOUT_INVALID",
+      "eventType": "EVENT_TYPE_INVALID",
+      "organizer": null,
+      "rewardsWidget": {
+       "title": "{{img|24|24|portal/static-assets/images/dineout/loyalty/Logo-Toggle.png}} Earn 10% DineCash on ticket booking",
+       "logo": "https://media-assets.swiggy.com/portal/static-assets/images/dineout/loyalty/Logo-Toggle.png"
+      }
+     }
+    },
+    "status": {
+     "code": 0,
+     "message": "Success",
+     "details": []
+    }
+   }
+  },
+  {
+   "input": {
+    "eventId": "100117513",
+    "venueId": "3417",
+    "showStartTime": "2026-09-26T00:00:00+05:30",
+    "showEndTime": "2026-09-27T23:59:00+05:30",
+    "latitude": 28.6139,
+    "longitude": 77.209
+   },
+   "result": {
+    "eventShowListing": {
+     "dateSummary": [
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 24
+       },
+       "totalAvailableInventory": 10,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 25
+       },
+       "totalAvailableInventory": 10,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 26
+       },
+       "totalAvailableInventory": 10,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 27
+       },
+       "totalAvailableInventory": 10,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 28
+       },
+       "totalAvailableInventory": 10,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 29
+       },
+       "totalAvailableInventory": 10,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 30
+       },
+       "totalAvailableInventory": 10,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      }
+     ],
+     "venueDetails": [
+      {
+       "id": "3417",
+       "name": "The Comedy Theatre - Hauz Khass Village",
+       "description": "",
+       "location": {
+        "latLng": {
+         "latitude": 28.554559,
+         "longitude": 77.195009
+        },
+        "cityId": 4,
+        "zoneId": 0,
+        "poiIds": []
+       },
+       "address": "The Comedy Theatre - Hauz Khass Village, Hauz Khas Village, Deer Park, Hauz Khas, New Delhi, Delhi, India",
+       "type": "VENUE_TYPE_SPECIFIC",
+       "auditoriums": [],
+       "distance": 6738.350854102113,
+       "cityDisplayName": "Delhi",
+       "localityDisplayName": "Hauz Khas"
+      }
+     ],
+     "dateGroupedEventShow": [
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 24
+       },
+       "eventShow": [
+        {
+         "id": "100453098",
+         "name": "2026-09-24 16:30:00-2026-09-24 17:30:00",
+         "timeRange": {
+          "startTime": "2026-09-24T16:30:00Z",
+          "endTime": "2026-09-24T17:30:00Z"
+         },
+         "eventId": "100117513",
+         "venue": {
+          "type": "VENUE_TYPE_SPECIFIC",
+          "venueId": "3417",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 10,
+         "tickets": [
+          {
+           "id": "1148624",
+           "name": "Entry Pass For 1",
+           "availableInventory": 10,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass admits 1 individual only</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790267400,
+         "show_time_ist": "Thu, 24 Sept, 10:00 pm"
+        }
+       ]
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 25
+       },
+       "eventShow": [
+        {
+         "id": "100453099",
+         "name": "2026-09-25 16:30:00-2026-09-25 17:30:00",
+         "timeRange": {
+          "startTime": "2026-09-25T16:30:00Z",
+          "endTime": "2026-09-25T17:30:00Z"
+         },
+         "eventId": "100117513",
+         "venue": {
+          "type": "VENUE_TYPE_SPECIFIC",
+          "venueId": "3417",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 10,
+         "tickets": [
+          {
+           "id": "1148625",
+           "name": "Entry Pass For 1",
+           "availableInventory": 10,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass admits 1 individual only</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790353800,
+         "show_time_ist": "Fri, 25 Sept, 10:00 pm"
+        }
+       ]
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 26
+       },
+       "eventShow": [
+        {
+         "id": "100453100",
+         "name": "2026-09-26 16:30:00-2026-09-26 17:30:00",
+         "timeRange": {
+          "startTime": "2026-09-26T16:30:00Z",
+          "endTime": "2026-09-26T17:30:00Z"
+         },
+         "eventId": "100117513",
+         "venue": {
+          "type": "VENUE_TYPE_SPECIFIC",
+          "venueId": "3417",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 10,
+         "tickets": [
+          {
+           "id": "1148626",
+           "name": "Entry Pass For 1",
+           "availableInventory": 10,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass admits 1 individual only</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790440200,
+         "show_time_ist": "Sat, 26 Sept, 10:00 pm"
+        }
+       ]
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 27
+       },
+       "eventShow": [
+        {
+         "id": "100453101",
+         "name": "2026-09-27 16:30:00-2026-09-27 17:30:00",
+         "timeRange": {
+          "startTime": "2026-09-27T16:30:00Z",
+          "endTime": "2026-09-27T17:30:00Z"
+         },
+         "eventId": "100117513",
+         "venue": {
+          "type": "VENUE_TYPE_SPECIFIC",
+          "venueId": "3417",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 10,
+         "tickets": [
+          {
+           "id": "1148627",
+           "name": "Entry Pass For 1",
+           "availableInventory": 10,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass admits 1 individual only</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790526600,
+         "show_time_ist": "Sun, 27 Sept, 10:00 pm"
+        }
+       ]
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 28
+       },
+       "eventShow": [
+        {
+         "id": "100453102",
+         "name": "2026-09-28 16:30:00-2026-09-28 17:30:00",
+         "timeRange": {
+          "startTime": "2026-09-28T16:30:00Z",
+          "endTime": "2026-09-28T17:30:00Z"
+         },
+         "eventId": "100117513",
+         "venue": {
+          "type": "VENUE_TYPE_SPECIFIC",
+          "venueId": "3417",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 10,
+         "tickets": [
+          {
+           "id": "1148628",
+           "name": "Entry Pass For 1",
+           "availableInventory": 10,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass admits 1 individual only</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790613000,
+         "show_time_ist": "Mon, 28 Sept, 10:00 pm"
+        }
+       ]
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 29
+       },
+       "eventShow": [
+        {
+         "id": "100453103",
+         "name": "2026-09-29 16:30:00-2026-09-29 17:30:00",
+         "timeRange": {
+          "startTime": "2026-09-29T16:30:00Z",
+          "endTime": "2026-09-29T17:30:00Z"
+         },
+         "eventId": "100117513",
+         "venue": {
+          "type": "VENUE_TYPE_SPECIFIC",
+          "venueId": "3417",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 10,
+         "tickets": [
+          {
+           "id": "1148629",
+           "name": "Entry Pass For 1",
+           "availableInventory": 10,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass admits 1 individual only</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790699400,
+         "show_time_ist": "Tue, 29 Sept, 10:00 pm"
+        }
+       ]
+      },
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 30
+       },
+       "eventShow": [
+        {
+         "id": "100453104",
+         "name": "2026-09-30 16:30:00-2026-09-30 17:30:00",
+         "timeRange": {
+          "startTime": "2026-09-30T16:30:00Z",
+          "endTime": "2026-09-30T17:30:00Z"
+         },
+         "eventId": "100117513",
+         "venue": {
+          "type": "VENUE_TYPE_SPECIFIC",
+          "venueId": "3417",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 10,
+         "tickets": [
+          {
+           "id": "1148630",
+           "name": "Entry Pass For 1",
+           "availableInventory": 10,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "299",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass admits 1 individual only</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790785800,
+         "show_time_ist": "Wed, 30 Sept, 10:00 pm"
+        }
+       ]
+      }
+     ],
+     "eventInfo": {
+      "id": "100117513",
+      "name": "Late Night StandUp Comedy Show",
+      "description": "",
+      "timeRange": {
+       "startTime": "2026-09-06T16:30:00Z",
+       "endTime": "2026-09-30T17:30:00Z"
+      },
+      "eventCategory": {
+       "id": "",
+       "name": ""
+      },
+      "languages": [
+       "english",
+       "hindi"
+      ],
+      "ageGroup": "16 yrs+",
+      "eventDuration": {
+       "type": "TYPE_HOURS",
+       "value": 1
+      },
+      "seatingArrangement": "SEATING_ARRANGEMENT_SEATED",
+      "tags": [
+       "stand up comedy",
+       "Open Mic Comedy",
+       "Kid's Friendly",
+       "comedy_07",
+       "CT_2026",
+       "kids_friendly",
+       "Collection1_v2"
+      ],
+      "status": "ENTITIES_DISCOVERY_STATE_INVALID",
+      "ticketStartPrice": null,
+      "recurring": true,
+      "contacts": [],
+      "artists": [],
+      "tour": null,
+      "thingsToRemember": [],
+      "tnc": "",
+      "layout": "LAYOUT_INVALID",
+      "eventType": "EVENT_TYPE_INVALID",
+      "organizer": null,
+      "rewardsWidget": {
+       "title": "{{img|24|24|portal/static-assets/images/dineout/loyalty/Logo-Toggle.png}} Earn 10% DineCash on ticket booking",
+       "logo": "https://media-assets.swiggy.com/portal/static-assets/images/dineout/loyalty/Logo-Toggle.png"
+      }
+     }
+    },
+    "status": {
+     "code": 0,
+     "message": "Success",
+     "details": []
+    }
+   }
+  },
+  {
+   "input": {
+    "eventId": "100118640",
+    "showStartTime": "2026-09-26T00:00:00Z",
+    "showEndTime": "2026-09-27T00:00:00Z",
+    "dateSummaryStartTime": "2026-09-26T00:00:00Z",
+    "dateSummaryEndTime": "2026-09-27T00:00:00Z",
+    "latitude": 28.6139,
+    "longitude": 77.209
+   },
+   "result": {
+    "eventShowListing": {
+     "dateSummary": [
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 26
+       },
+       "totalAvailableInventory": 100,
+       "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+      }
+     ],
+     "venueDetails": [
+      {
+       "id": "633618",
+       "name": "Effingut",
+       "description": "",
+       "location": {
+        "latLng": {
+         "latitude": 28.5303587,
+         "longitude": 77.22048372
+        },
+        "cityId": 4,
+        "zoneId": 0,
+        "poiIds": []
+       },
+       "address": "Mgf Metropolitan Mall, Ground Floor-10, Saket  South Delhi 110017",
+       "type": "VENUE_TYPE_RX",
+       "auditoriums": [],
+       "distance": 9356.813372180754,
+       "cityDisplayName": "Delhi",
+       "localityDisplayName": "Saket"
+      }
+     ],
+     "dateGroupedEventShow": [
+      {
+       "date": {
+        "year": 2026,
+        "month": 9,
+        "day": 26
+       },
+       "eventShow": [
+        {
+         "id": "100436365",
+         "name": "2026-09-26 14:30:00-2026-09-26 18:29:00",
+         "timeRange": {
+          "startTime": "2026-09-26T14:30:00Z",
+          "endTime": "2026-09-26T18:29:00Z"
+         },
+         "eventId": "100118640",
+         "venue": {
+          "type": "VENUE_TYPE_RX",
+          "venueId": "633618",
+          "name": "",
+          "status": "STATE_INVALID",
+          "locality": ""
+         },
+         "auditoriumId": "",
+         "gatePreopenedAt": null,
+         "maxAvailableInventory": 100,
+         "tickets": [
+          {
+           "id": "1108799",
+           "name": "Entry Pass For One",
+           "availableInventory": 100,
+           "price": {
+            "price": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            },
+            "discountedPrice": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            },
+            "coverCharge": {
+             "currencyCode": "INR",
+             "units": "0",
+             "nanos": 0
+            }
+           },
+           "tnc": "<ul><li>This pass is applicable for one person only.</li><li>This is an entry pass only.</li></ul>",
+           "status": "ENTITIES_DISCOVERY_STATE_ON_SALE"
+          }
+         ],
+         "purchaseRules": {
+          "allowedCovers": {
+           "min": 1,
+           "max": 10
+          },
+          "allowedType": "TICKET_PURCHASE_ALLOWED_MULTIPLE_VARIANTS"
+         },
+         "status": "ENTITIES_DISCOVERY_STATE_ON_SALE",
+         "show_time_unix": 1790433000,
+         "show_time_ist": "Sat, 26 Sept, 8:00 pm"
+        }
+       ]
+      }
+     ],
+     "eventInfo": {
+      "id": "100118640",
+      "name": "Afterhours Saturday Ft DJ Manny At Effingut Saket",
+      "description": "",
+      "timeRange": {
+       "startTime": "2026-09-12T14:30:00Z",
+       "endTime": "2026-09-26T18:29:00Z"
+      },
+      "eventCategory": {
+       "id": "",
+       "name": ""
+      },
+      "languages": [
+       "hindi",
+       "english"
+      ],
+      "ageGroup": "",
+      "eventDuration": {
+       "type": "TYPE_HOURS",
+       "value": 3
+      },
+      "seatingArrangement": "SEATING_ARRANGEMENT_STANDING_AND_SEATED",
+      "tags": [
+       "do-rx-event",
+       "dj night",
+       "experiences",
+       "live music",
+       "party nightlife",
+       "Pet Friendly Events",
+       "Birthday",
+       "kids_friendly",
+       "pet_friendly",
+       "party_07",
+       "Party_Nightlife_Music_CoC",
+       "do_event_exp",
+       "Collection2_v2",
+       "cluster2_parties_v1",
+       "buzzin_mostbooked_v1",
+       "buzzin_freeevents_v1",
+       "collection2_freeevents_v1",
+       "collection2_parties_v1"
+      ],
+      "status": "ENTITIES_DISCOVERY_STATE_INVALID",
+      "ticketStartPrice": null,
+      "recurring": false,
+      "contacts": [],
+      "artists": [],
+      "tour": null,
+      "thingsToRemember": [],
+      "tnc": "",
+      "layout": "LAYOUT_INVALID",
+      "eventType": "EVENT_TYPE_INVALID",
+      "organizer": null,
+      "rewardsWidget": {
+       "title": "{{img|24|24|portal/static-assets/images/dineout/loyalty/Logo-Toggle.png}} Earn 10% DineCash on ticket booking",
+       "logo": "https://media-assets.swiggy.com/portal/static-assets/images/dineout/loyalty/Logo-Toggle.png"
+      }
+     }
+    },
+    "status": {
+     "code": 0,
+     "message": "Success",
+     "details": []
+    }
+   }
+  }
+ ]
+}

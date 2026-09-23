@@ -3,6 +3,9 @@ import {
   CarTaxiFront,
   Check,
   ChevronDown,
+  Database,
+  ExternalLink,
+  Star,
   CircleCheck,
   CircleX,
   CloudSun,
@@ -24,7 +27,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
-import { clock, clockRange, CROWD_LABEL, fallbackReason, minutes, MODE_LABEL, rupees, VEG_LABEL } from "../format";
+import { clock, clockRange, CROWD_LABEL, fallbackReason, minutes, MODE_LABEL, rupees, sourcesLine, VEG_LABEL } from "../format";
 import { KIND_LABELS, KIND_ORDER, type Leg, type OptionKind, type PlanItemOut, type PlanOptionOut, type RunOut } from "../types";
 
 const KIND_STYLE: Record<OptionKind, { icon: LucideIcon; text: string; soft: string; dot: string }> = {
@@ -85,7 +88,8 @@ export function PlanResults({ run, onChoose, choosing }: Props) {
 /** Weather + assumptions, folded into one line. */
 function Notes({ run }: { run: RunOut }) {
   const [open, setOpen] = useState(false);
-  const count = run.assumptions.length + (run.weather_note ? 1 : 0);
+  const sources = sourcesLine(run.data_sources);
+  const count = run.assumptions.length + (run.weather_note ? 1 : 0) + (sources ? 1 : 0);
   if (!count) return null;
   return (
     <div>
@@ -96,11 +100,17 @@ function Notes({ run }: { run: RunOut }) {
         className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface/70 px-3 py-1 text-xs font-medium text-muted backdrop-blur transition-colors hover:border-accent hover:text-accent"
       >
         <CloudSun size={14} className="text-teal-ink" aria-hidden />
-        Weather and assumptions ({count})
+        Sources, weather and assumptions ({count})
         <ChevronDown size={13} className={`transition-transform ${open ? "rotate-180" : ""}`} aria-hidden />
       </button>
       {open && (
         <ul className="animate-fade-up mt-2 space-y-1.5 rounded-2xl border border-line bg-surface/70 p-3 text-sm text-muted backdrop-blur">
+          {sources && (
+            <li className="flex items-start gap-2">
+              <Database size={15} className="mt-0.5 shrink-0 text-accent" aria-hidden />
+              <span>{sources}</span>
+            </li>
+          )}
           {run.weather_note && (
             <li className="flex items-start gap-2">
               <CloudSun size={15} className="mt-0.5 shrink-0 text-teal-ink" aria-hidden />
@@ -376,6 +386,21 @@ function ItemRow({ item }: { item: PlanItemOut }) {
       <p className="text-xs capitalize text-muted">
         {item.label.replace(/_/g, " ")} · {item.area}
       </p>
+      {(item.rating || item.url || item.source === "swiggy") && (
+        <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-muted">
+          {item.rating ? (
+            <span className="inline-flex items-center gap-0.5">
+              <Star size={11} className="text-accent" aria-hidden /> {item.rating.toFixed(1)} on Google
+            </span>
+          ) : null}
+          {item.source === "swiggy" && <span className="font-medium text-rose-ink">Live on Swiggy Scenes</span>}
+          {item.url && (
+            <a href={item.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-teal-ink hover:underline">
+              Open in Maps <ExternalLink size={11} aria-hidden />
+            </a>
+          )}
+        </p>
+      )}
       <div className="mt-1.5 flex flex-wrap gap-1">
         <Chip icon={Users} tone={item.crowd === "high" ? "warn" : "plain"}>
           {CROWD_LABEL[item.crowd]}

@@ -56,6 +56,17 @@ class Settings:
     mock_latency_ms: int = 250
     app_url: str = "http://localhost:5173"
     limits: Limits = field(default_factory=Limits)
+    # live data (each falls back to the mock city files when unset or failing)
+    google_maps_api_key: str = ""
+    places_cache_hours: float = 12.0
+    swiggy_scenes_token: str = ""
+    swiggy_scenes_url: str = "https://mcp.swiggy.com/scenes"
+    events_cache_hours: float = 3.0
+    live_events_max: int = 12
+
+    @property
+    def swiggy_enabled(self) -> bool:
+        return bool(self.swiggy_scenes_token)
 
 
 def load_settings() -> Settings:
@@ -73,4 +84,10 @@ def load_settings() -> Settings:
         rate_global_per_day=_int("RATE_GLOBAL_PER_DAY", 150),
         mock_latency_ms=_int("MOCK_LATENCY_MS", 250),
         app_url=os.getenv("APP_URL", "http://localhost:5173"),
+        google_maps_api_key=os.getenv("GOOGLE_MAPS_API_KEY", "").strip(),
+        places_cache_hours=float(os.getenv("PLACES_CACHE_HOURS", "12")),
+        swiggy_scenes_token=os.getenv("SWIGGY_SCENES_TOKEN", "").strip(),
+        swiggy_scenes_url=os.getenv("SWIGGY_SCENES_URL", "https://mcp.swiggy.com/scenes"),
+        events_cache_hours=float(os.getenv("EVENTS_CACHE_HOURS", "3")),
+        live_events_max=_int("LIVE_EVENTS_MAX", 12),
     )

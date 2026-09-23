@@ -181,6 +181,10 @@ def compact(ctx, p: Place, *, with_alternatives: bool = True) -> dict:
         "tags": p.tags,
         "about": p.blurb,
     })
+    if p.rating:
+        base["rating"] = f"{p.rating} on Google ({p.rating_count or 0:,} reviews)"
+    if p.source == "swiggy":
+        base["live"] = "Swiggy Scenes listing"
     if p.id in ctx.past_place_ids:
         base["memory"] = "in one of this user's past plans"
     if with_alternatives:

@@ -14,7 +14,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useMemo, useState, type ReactNode } from "react";
-import { clock, rupees } from "../format";
+import { clock, rupees, sourcesLine } from "../format";
 import { KIND_LABELS, type Simulate, type TraceEvent } from "../types";
 
 export interface TraceEntry {
@@ -286,12 +286,26 @@ function Entry({ ev, result, running }: { ev: TraceEvent; result?: ToolResult; r
             .filter(Boolean)
             .join(" · ")
         : "";
-      if (!bits) return null;
-      if (!bits) return null;
+      const sources = sourcesLine(ev.sources);
+      if (!bits && !sources) return null;
       return (
-        <li className="px-1 pb-1 text-xs text-muted">
-          <span className="font-semibold text-ink">Planning for</span> {bits}
-        </li>
+        <>
+          {bits && (
+            <li className="px-1 pb-1 text-xs text-muted">
+              <span className="font-semibold text-ink">Planning for</span> {bits}
+            </li>
+          )}
+          {sources && (
+            <li className="px-1 pb-1 text-xs text-muted">
+              <span className="font-semibold text-ink">Data</span> {sources}
+              {ev.sources?.notes?.map((n) => (
+                <span key={n} className="block text-warn">
+                  {n}
+                </span>
+              ))}
+            </li>
+          )}
+        </>
       );
     }
     case "step":

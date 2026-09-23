@@ -9,6 +9,15 @@ export type OptionKind = "time_saver" | "recommended" | "value_for_money";
 export type ValidationStatus = "pass" | "warn" | "fail";
 export type SessionStatus = "collecting" | "ready" | "planning" | "planned";
 export type Simulate = "weather_down" | "no_restaurants" | "llm_down";
+export type PlaceSource = "mock" | "google" | "swiggy";
+
+/** Where a run's places came from (RunOut.data_sources / run_started.sources). */
+export interface DataSources {
+  events: string;
+  places: string;
+  counts?: Record<string, number>;
+  notes?: string[];
+}
 
 export const KIND_ORDER: OptionKind[] = ["time_saver", "recommended", "value_for_money"];
 export const KIND_LABELS: Record<OptionKind, string> = {
@@ -67,6 +76,9 @@ export interface PlanItemOut {
   blurb: string;
   why_it_fits: string;
   leg_before: Leg | null;
+  source?: PlaceSource;
+  url?: string | null;
+  rating?: number | null;
 }
 
 export interface Totals {
@@ -145,6 +157,7 @@ export interface RunOut {
   fallback_reason: string | null;
   chosen: OptionKind | null;
   usage: Usage;
+  data_sources?: DataSources;
 }
 
 export interface MessageOut {
@@ -186,6 +199,7 @@ export type TraceEvent =
       prefs?: Record<string, unknown>;
       window?: { start: string; end: string };
       limits?: Record<string, unknown>;
+      sources?: DataSources;
     }
   | { type: "step"; n: number; max: number }
   | { type: "narration"; text: string }

@@ -116,6 +116,7 @@ def evaluate(ctx, opt: PlanOptionIn, *, grounded: bool = True, source: str = "ag
             start=fmt(start), end=fmt(end), duration_min=duration, cost_inr=cost,
             tier=item.tier if place.kind != "restaurant" else None, indoor=place.indoor, crowd=crowd,
             veg=place.veg, blurb=place.blurb, why_it_fits=item.why_it_fits.strip(), leg_before=lg,
+            source=place.source, url=place.url, rating=place.rating,
         ))
         prev_place, prev_end = place, end
 

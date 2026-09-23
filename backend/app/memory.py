@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import sqlite3
 import threading
+import time
 import uuid
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -33,6 +34,7 @@ CREATE TABLE IF NOT EXISTS runs (
 );
 CREATE INDEX IF NOT EXISTS runs_session ON runs(session_id, created_at);
 CREATE TABLE IF NOT EXISTS counters (key TEXT PRIMARY KEY, count INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS source_cache (key TEXT PRIMARY KEY, value TEXT NOT NULL, expires_at REAL NOT NULL);
 """
 
 MAX_PAST_PLACES = 30
@@ -207,6 +209,20 @@ class Store:
 
     def forget(self, user_id: str) -> None:
         self._q("DELETE FROM profiles WHERE user_id = ?", (user_id,))
+
+    # ------------------------------------------------------------------ live-data cache
+
+    def cache_get(self, key: str):
+        rows = self._q("SELECT value, expires_at FROM source_cache WHERE key = ?", (key,))
+        if not rows or rows[0]["expires_at"] < time.time():
+            return None
+        return json.loads(rows[0]["value"])
+
+    def cache_set(self, key: str, value, ttl_s: float) -> None:
+        self._q(
+            "INSERT INTO source_cache VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, expires_at = excluded.expires_at",
+            (key, json.dumps(value), time.time() + ttl_s),
+        )
 
     # ------------------------------------------------------------------ rate limits
 

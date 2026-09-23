@@ -53,6 +53,7 @@ async def run_agent(
     simulate: frozenset[str] = frozenset(),
     mock_latency_s: float = 0.0,
     extra_assumptions: list[str] | None = None,
+    data_sources: dict | None = None,
 ) -> RunResult:
     trace: list[dict] = []
     started = time.monotonic()
@@ -75,6 +76,7 @@ async def run_agent(
         "type": "run_started", "run_id": run_id, "model": llm.model,
         "prefs": prefs.model_dump(), "window": {"start": fmt(ctx.window_start), "end": fmt(ctx.window_end)},
         "limits": {"max_steps": limits.max_steps, "max_tool_calls": limits.max_tool_calls, "caps": limits.caps},
+        "sources": data_sources or {"events": "mock", "places": "mock"},
     })
 
     reason: str | None = None
@@ -167,6 +169,7 @@ async def run_agent(
         fallback=not ctx.accepted,
         fallback_reason=None if ctx.accepted else FALLBACK_REASONS.get(reason or "", reason),
         usage=usage,
+        data_sources=data_sources or {"events": "mock", "places": "mock"},
     )
     await record({"type": "usage", **usage})
     await record({"type": "plans", "run": run.model_dump()})

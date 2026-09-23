@@ -95,6 +95,14 @@ export function fallbackReason(reason: string | null | undefined): string {
   return FALLBACK_REASONS[reason] ?? reason.replace(/_/g, " ");
 }
 
+/** "Events: live from Swiggy Scenes · Places: live from Google Maps · …" */
+export function sourcesLine(ds: { events: string; places: string } | null | undefined): string | null {
+  if (!ds) return null;
+  const events = ds.events === "swiggy" ? "live from Swiggy Scenes" : "sample data";
+  const places = ds.places === "google" ? "live from Google Maps" : "sample data";
+  return `Events: ${events} · Restaurants and places: ${places} · Weather, travel and crowd levels: simulated`;
+}
+
 export function newId(): string {
   try {
     return crypto.randomUUID();

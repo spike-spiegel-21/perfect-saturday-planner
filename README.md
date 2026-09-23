@@ -78,7 +78,11 @@ flowchart LR
 | `validate_plan(options[])` | Real totals and a list of violations to fix |
 | `submit_plans(options[3])` | Accepted or rejected with the problems. This is the done signal |
 
-The mock data covers Bangalore, Gurgaon, Delhi and Mumbai: about 28 real-sounding places each, with Saturday showtimes, plausible prices and late-September weather (`backend/app/data/*.json`).
+**Live data (optional):** set `GOOGLE_MAPS_API_KEY` and `SWIGGY_SCENES_TOKEN` in `backend/.env` and each run builds its city from:
+- **Swiggy Scenes MCP** (`https://mcp.swiggy.com/scenes`): Saturday events with IST showtimes, per-person ticket tiers and venue coordinates. The token comes from `uv run python -m app.sources.swiggy_login`.
+- **Google Places API (New):** restaurants and activities with Saturday hours, ratings, price range, and vegetarian and wheelchair flags.
+
+Crowd levels, entry prices for parks and museums, visit length and cheaper alternatives are estimated. Weather, traffic and fares stay simulated. Results are cached in SQLite (places 12 h, events 3 h), and either source falls back to the sample data if it's unset or fails. The sample data covers Bangalore, Gurgaon, Delhi and Mumbai
 
 ## Failure handling (all can be demoed)
 

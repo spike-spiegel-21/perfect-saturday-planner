@@ -20,6 +20,7 @@ CATEGORIES: tuple[str, ...] = Category.__args__  # type: ignore[attr-defined]
 Crowd = Literal["low", "medium", "high"]
 VegType = Literal["pure_veg", "veg_friendly", "non_veg"]
 PlaceKind = Literal["event", "activity", "restaurant"]
+PlaceSource = Literal["mock", "google", "swiggy"]
 Energy = Literal["low", "medium", "high"]
 TravelMode = Literal["walk", "auto", "cab", "metro"]
 
@@ -139,6 +140,11 @@ class Place(BaseModel):
     cost_for_one: int | None = None
     veg: VegType | None = None
     meal_min: int | None = None
+    # provenance: where this place came from, and anything real we know about it
+    source: PlaceSource = "mock"
+    url: str | None = None          # booking page (Swiggy Scenes) or Google Maps link
+    rating: float | None = None     # Google rating, 1-5
+    rating_count: int | None = None
 
     @model_validator(mode="after")
     def _kind_fields(self) -> Place:
@@ -307,6 +313,9 @@ class PlanItemOut(BaseModel):
     blurb: str
     why_it_fits: str
     leg_before: Leg | None = None
+    source: PlaceSource = "mock"
+    url: str | None = None
+    rating: float | None = None
 
 
 class Totals(BaseModel):
@@ -370,6 +379,7 @@ class RunOut(BaseModel):
     fallback_reason: str | None = None
     chosen: OptionKind | None = None
     usage: dict = {}                      # steps, tool_calls, prompt_tokens, completion_tokens, cost_usd, seconds
+    data_sources: dict = {}               # {"events": "swiggy"|"mock", "places": "google"|"mock", counts, notes}
 
 
 class MessageOut(BaseModel):

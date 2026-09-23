@@ -17,7 +17,8 @@ from fastapi.responses import StreamingResponse
 
 from app.agent.loop import run_agent
 from app.config import Settings, load_settings
-from app.data import load_city
+from app.sources import build_city
+from app.util import next_saturday
 from app.intake import TurnState, greeting, handle_turn, missing_fields, to_preferences
 from app.llm import LLM, DisabledLLM, OpenRouterLLM
 from app.memory import Store, memory_summary, past_place_ids
@@ -136,8 +137,9 @@ def create_app(settings: Settings | None = None, *, llm: LLM | None = None, stor
 
         async def worker() -> None:
             try:
+                city, sources = await build_city(prefs.city, settings=settings, cache=store, saturday=next_saturday())
                 result = await run_agent(
-                    prefs, load_city(prefs.city), llm, emit, run_id=run_id, limits=settings.limits,
+                    prefs, city, llm, emit, run_id=run_id, limits=settings.limits, data_sources=sources.dump(),
                     effort=settings.planner_effort, memory_summary=memory_summary(profile),
                     past_place_ids=past_place_ids(profile), refinement=state.refinement, previous=previous,
                     simulate=sim, mock_latency_s=settings.mock_latency_ms / 1000, extra_assumptions=state.assumed,
