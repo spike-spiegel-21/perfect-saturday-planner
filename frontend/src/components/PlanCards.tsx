@@ -393,12 +393,17 @@ function ItemRow({ item }: { item: PlanItemOut }) {
               <Star size={11} className="text-accent" aria-hidden /> {item.rating.toFixed(1)} on Google
             </span>
           ) : null}
-          {item.source === "swiggy" && <span className="font-medium text-rose-ink">Live on Swiggy Scenes</span>}
-          {item.url && (
+          {item.url && item.source === "swiggy" ? (
+            <a href={item.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 font-medium text-rose-ink hover:underline">
+              Book on Swiggy Scenes <ExternalLink size={11} aria-hidden />
+            </a>
+          ) : item.source === "swiggy" ? (
+            <span className="font-medium text-rose-ink">Live on Swiggy Scenes</span>
+          ) : item.url ? (
             <a href={item.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-teal-ink hover:underline">
               Open in Maps <ExternalLink size={11} aria-hidden />
             </a>
-          )}
+          ) : null}
         </p>
       )}
       <div className="mt-1.5 flex flex-wrap gap-1">

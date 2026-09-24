@@ -64,8 +64,21 @@ TYPICAL_VISIT_MIN = 150
 GROUP_PASS = re.compile(r"\bfor\s*([2-9]|\d{2})\b|couple|group|table", re.I)
 
 
+# Public event pages: https://www.swiggy.com/scenes/{category}/{name-slug}/{city}/{eventId}. The page is rendered
+# from the event id; the other segments are cosmetic, so they only need to look like Swiggy's own.
+EVENT_PAGE = "https://www.swiggy.com/scenes/{category}/{slug}/{city}/{event_id}"
+PAGE_CATEGORY = {"comedy": "comedy", "music": "music", "workshop": "workshop", "gaming": "activities",
+                 "sports": "activities"}
+
+
 class ScenesError(Exception):
     pass
+
+
+def event_url(event_id: str, name: str, category: str, city_key: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-") or "event"
+    return EVENT_PAGE.format(category=PAGE_CATEGORY.get(category, "experiences"), slug=slug, city=city_key,
+                             event_id=event_id)
 
 
 async def fetch_events(city: CityData, saturday: date, *, settings, cache) -> list[Place]:
@@ -183,7 +196,7 @@ def to_event(suggestion: dict, listing: dict, city: CityData, saturday: date) ->
     lat, lng = latlng.get("latitude"), latlng.get("longitude")
     if lat is None or lng is None:
         return None
-    name = info.get("name") or suggestion.get("eventName") or "Live event"
+    name = " ".join((info.get("name") or suggestion.get("eventName") or "Live event").split())  # listings carry stray spaces
     tags_raw = [t.lower() for t in info.get("tags") or []]
     category = classify(name, tags_raw)
     tiers = _tiers(tickets)
@@ -209,13 +222,15 @@ def to_event(suggestion: dict, listing: dict, city: CityData, saturday: date) ->
         info.get("ageGroup") or "",
         ", ".join(l.title() for l in info.get("languages") or []),
     ) if b)
+    event_id = str(info.get("id") or suggestion["eventId"])
     return Place(
-        id=f"sw_{info.get('id') or suggestion['eventId']}", kind="event", name=name, area=area,
+        id=f"sw_{event_id}", kind="event", name=name, area=area,
         lat=float(lat), lng=float(lng), blurb=(blurb or name)[:160], indoor=not outdoor,
         crowd=CrowdBySlot(morning="low", afternoon="low", evening="high" if busy else "medium",
                           night="high" if busy else "medium"),
         tags=sorted(set(tags)), category=category, start_times=sorted(set(starts)),
         duration_min=_duration(info, span), price_tiers=tiers, source="swiggy",
+        url=event_url(event_id, name, category, city.key),
     )
 
 

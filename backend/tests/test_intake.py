@@ -159,3 +159,12 @@ async def test_refinement_pills_work_without_the_model():
     slots = Slots(city="gurgaon", city_name="Gurgaon", budget_inr=3000, available_hours=4, mood="tired", interests=["food"], constraints=[])
     res = await handle_turn(NO_LLM, "Make it cheaper, Less travel", slots, TurnState(), status="planned", profile=None)
     assert res.replan and "cheaper" in res.state.refinement
+
+
+async def test_no_constraints_in_the_first_message_counts_as_an_answer():
+    turns, slots, _ = await converse(NO_LLM, ["delhi, ₹2000, 4 hours from 3pm, feeling social, into museums and food, no constraints"])
+    assert slots.constraints == [] and turns[0].ready
+    llm = FakeLLM([json_step(extraction(city="Delhi", budget_inr=2000, available_hours=4, start_time="15:00", mood="curious",
+                                        energy="medium", interests=["museums"], constraints=[]))])
+    turns, slots, _ = await converse(llm, ["Delhi, 2000, 3-7pm, curious, museums, no constraints"])
+    assert slots.constraints == [] and turns[0].ready

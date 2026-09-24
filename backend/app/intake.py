@@ -144,7 +144,8 @@ Rules:
 - interests: short lowercase phrases (["food", "live music", "walks"]); "anything"/"surprise me" -> ["surprise me"].
 - constraints: short phrases. Use exactly these when they apply: "vegetarian", "vegan", "jain", "avoid crowds",
   "no alcohol", "wheelchair access", "back by HH:MM". "none"/"no"/"nothing" in answer to the constraints
-  question -> []. Otherwise null when not mentioned.
+  question -> []. If they say anywhere that they have no constraints ("no constraints", "no restrictions",
+  "anything works") -> [] as well. Otherwise null when not mentioned.
 - vague_fields: fields the user tried to answer but too vaguely to use ("not too much", "some time").
 - refinement_note: if they ask to change an existing plan ("make it cheaper", "more outdoors"), a short note; else null.
 - ack: at most 12 words, warm and specific to what they said, no question, no emoji ("Gurgaon on ₹3,000, nice.").
@@ -183,6 +184,7 @@ _CLOCK = r"(?<![\d₹,.])(\d{1,2})(?::(\d{2}))?\s*(am|pm)?(?![\d,])"
 _RANGE = re.compile(_CLOCK + r"\s*(?:-|–|to|till|until)\s*" + _CLOCK, re.I)
 _FROM = re.compile(r"(?:from|after|at|starting)\s+" + _CLOCK, re.I)
 _NONE = re.compile(r"^\s*(none|no|nope|nothing|nah|no constraints|nothing really|all good|na)\s*[.!]?\s*$", re.I)
+_NO_CONSTRAINTS = re.compile(r"\bno (constraints|restrictions|dietary restrictions|preferences)\b|\bnothing to avoid\b", re.I)
 _REFINE = re.compile(r"\b(cheaper|less travel|more (?:outdoors?|indoors?)|start later|later start|earlier|swap|shorter|longer|different|change|instead|less walking)\b", re.I)
 _MOOD_WORDS = re.compile(r"\b(tired|exhausted|sleepy|lazy|bored|stressed|chill|relaxed|happy|excited|adventurous|energetic|social|romantic|low|meh)\b", re.I)
 
@@ -246,7 +248,7 @@ def regex_extract(text: str, asking: str | None) -> Extraction:
             ex.interests = found
     if asking is None and _REFINE.search(t):
         ex.refinement_note = t[:120]
-    if asking == "constraints" and _NONE.match(t):
+    if (asking == "constraints" and _NONE.match(t)) or _NO_CONSTRAINTS.search(t):
         ex.constraints = []
     elif asking == "constraints" and t:
         ex.constraints = [p.strip().lower() for p in re.split(r",|\band\b|/", t) if p.strip()][:8]
@@ -365,7 +367,7 @@ def merge(slots: Slots, ex: Extraction, asking: str | None) -> Merge:
         if "surprise me" in merged and len(merged) > 1:
             merged.remove("surprise me")
         put("interests", "interests", merged[:8])
-    if ex.constraints is not None and (ex.constraints or asking == "constraints"):
+    if ex.constraints is not None:  # [] means the user said "none", whether or not we asked yet
         cleaned = [c for c in ex.constraints if c.strip().lower() not in {"none", "no", "nothing"}]
         put("constraints", "constraints", _union(s.constraints or [], cleaned))
         s.rules = rules_from(s.constraints or [])

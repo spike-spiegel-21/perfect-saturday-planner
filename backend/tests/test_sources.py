@@ -10,7 +10,7 @@ from app.memory import Store
 from app.sources import build_city
 from app.sources.alternatives import link_cheaper_alternatives
 from app.sources.google_places import cost_for_one, saturday_hours, to_activity, to_restaurant
-from app.sources.swiggy_scenes import _tiers, classify, events_from
+from app.sources.swiggy_scenes import _tiers, classify, event_url, events_from
 
 FIXTURE = json.loads((Path(__file__).parent / "fixtures" / "swiggy_scenes_delhi.json").read_text())
 SATURDAY = date(2026, 9, 26)
@@ -140,3 +140,12 @@ def test_scenes_classifier_prefers_the_event_name():
         {"name": "Adult Pass (Above 120 cm)", "price": {"price": {"units": "1199"}}},
     ])
     assert [t.price for t in tiers] == [1199]
+
+
+def test_scenes_events_link_to_their_swiggy_page():
+    assert event_url("100067798", "Vivek Samtani Live", "comedy", "bangalore") == \
+        "https://www.swiggy.com/scenes/comedy/vivek-samtani-live/bangalore/100067798"
+    assert event_url("1", "Ladakh's Alchi Kitchen - Nila!", "food_walk", "delhi") == \
+        "https://www.swiggy.com/scenes/experiences/ladakh-s-alchi-kitchen-nila/delhi/1"
+    for e in events_from(_scenes_raw(), load_city("delhi"), SATURDAY):
+        assert e.url.startswith("https://www.swiggy.com/scenes/") and e.url.endswith("/" + e.id.removeprefix("sw_"))
